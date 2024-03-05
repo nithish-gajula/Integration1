@@ -15,6 +15,7 @@
 
 
     <color name="blank">#696969</color>
+    <color name="grey">#F2F2F2</color>
     <color name="sky_blue">#FF0076F7</color>
 
     <color name="blue">#2196F3</color>

@@ -66,18 +66,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_tv_id" />
 
-    <View
-        style="@style/Widget.Material3.MaterialDivider"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginStart="85dp"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/profile_image"
-        app:layout_constraintTop_toBottomOf="@id/description_tv_id" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

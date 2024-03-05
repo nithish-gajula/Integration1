@@ -1,5 +1,8 @@
 package com.example.integration1
 
+import CustomAdapter
+import Item
+import Section
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,7 +15,6 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ListAdapter
 import android.widget.ListView
-import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,8 +27,12 @@ import com.android.volley.Response
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class GetDataFragment : Fragment() {
     private lateinit var adapter: ListAdapter
@@ -35,6 +41,7 @@ class GetDataFragment : Fragment() {
     private lateinit var getIdET: EditText
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
+    private val groupedItemsJson = JSONObject()
 
     private val contextTAG: String = "GetDataFragment"
 
@@ -91,8 +98,12 @@ class GetDataFragment : Fragment() {
         queue.add(stringRequest)
     }
 
+    /*
+
+
     private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
         val list = ArrayList<HashMap<String, String?>>()
+        val monthItemsMap = HashMap<String, ArrayList<HashMap<String, String?>>>()
         val imageNames = arrayOf(R.mipmap.meat, R.mipmap.shopping_cart, R.mipmap.rice)
         try {
             val jsonObj = JSONObject(jsonResponse)
@@ -106,7 +117,7 @@ class GetDataFragment : Fragment() {
                 val amount = jo.getString("amount")
                 var description = jo.getString("description")
 
-                if(description.length >= 20){
+                if (description.length >= 20) {
                     description = description.substring(0, 20) + ".."
                 }
 
@@ -152,6 +163,123 @@ class GetDataFragment : Fragment() {
     }
 
 
+
+     */
+
+
+    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
+        try {
+            val jsonObj = JSONObject(jsonResponse)
+            val jsonArray = jsonObj.getJSONArray("items")
+
+            for (i in 0 until jsonArray.length()) {
+                val jo = jsonArray.getJSONObject(i)
+                val dateFormats = convertDateFormat(jo.getString("date"))
+                val monthKey = dateFormats.format2
+
+                if (groupedItemsJson.has(monthKey)) {
+                    val monthData =
+                        groupedItemsJson.getJSONObject(monthKey).getJSONArray("MonthData")
+                    val monthTotal =
+                        groupedItemsJson.getJSONObject(monthKey).getDouble("MonthTotal")
+
+                    val newData = JSONObject().apply {
+                        put("position1", "Nithish Gajula")
+                        put("position2", limitDescription(jo.getString("description")))
+                        put("position3", dateFormats.format1)
+                        put("position4", "₹ ${jo.getString("amount")}")
+                        put("position5", jo.getString("dataId"))
+                    }
+                    monthData.put(newData)
+                    groupedItemsJson.getJSONObject(monthKey)
+                        .put("MonthTotal", monthTotal + jo.getString("amount").toDouble())
+                } else {
+                    val newDataArray = JSONArray()
+                    val newData = JSONObject().apply {
+                        put("position1", "Nithish Gajula")
+                        put("position2", limitDescription(jo.getString("description")))
+                        put("position3", dateFormats.format1)
+                        put("position4", "₹ ${jo.getString("amount")}")
+                        put("position5", jo.getString("dataId"))
+                    }
+                    newDataArray.put(newData)
+
+                    val monthObject = JSONObject().apply {
+                        put("MonthName", monthKey)
+                        put("MonthData", newDataArray)
+                        put("MonthTotal", jo.getString("amount").toDouble())
+                    }
+
+                    groupedItemsJson.put(monthKey, monthObject)
+                }
+            }
+
+            val months = groupedItemsJson.keys().asSequence().toList()
+            val dateFormat = SimpleDateFormat("MMM yyyy", Locale.ENGLISH)
+            val dateList = months.map { dateFormat.parse(it) }
+            val sortedDescending = dateList.sortedDescending()
+            val sortedMonths = sortedDescending.map { dateFormat.format(it) }
+
+            categorizeItems(sortedMonths, roomActivity)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
+        val dataList = mutableListOf<Any>()
+        try {
+            for (i in months.indices) {
+                val monthJsonObject = groupedItemsJson.getJSONObject(months[i])
+                dataList.add(
+                    Section(
+                        monthJsonObject.getString("MonthName"),
+                        monthJsonObject.getString("MonthTotal")
+                    )
+                )
+
+                val monthData = monthJsonObject.getJSONArray("MonthData")
+                for (j in 0 until monthData.length()) {
+                    val itemData = monthData.getJSONObject(j)
+                    dataList.add(
+                        Item(
+                            itemData.getString("position1"),
+                            itemData.getString("position2"),
+                            itemData.getString("position3"),
+                            itemData.getString("position4"),
+                            itemData.getString("position5")
+                        )
+                    )
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        adapter = CustomAdapter(requireContext(), dataList)
+        listView.adapter = adapter
+
+        roomActivity.alertDialog.dismiss()
+    }
+
+    private fun limitDescription(description: String): String {
+        return if (description.length >= 20) "${description.substring(0, 20)}.." else description
+    }
+
+    private data class DateFormats(val format1: String, val format2: String)
+
+    private fun convertDateFormat(dateString: String): DateFormats {
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+        val date: Date = dateFormat.parse(dateString) ?: return DateFormats("", "")
+
+        val outputDateFormat1 = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val outputDateFormat2 = SimpleDateFormat("MMM yyyy", Locale.getDefault())
+
+        val formattedDate1 = outputDateFormat1.format(date)
+        val formattedDate2 = outputDateFormat2.format(date)
+
+        return DateFormats(formattedDate1, formattedDate2)
+    }
 
     private fun delete(
         id: String,
