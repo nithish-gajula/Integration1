@@ -3,6 +3,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import com.example.integration1.R
 
@@ -48,15 +49,17 @@ class CustomAdapter(private val context: Context, private val dataList: List<Any
             val textViewAmount = view.findViewById<TextView>(R.id.section_header_amount)
             textViewAmount.text = section.amount
         } else {
-            val item2 = item as Item
+            val item = item as Item
             val userNameTV = view.findViewById<TextView>(R.id.user_name_tv_id)
             val descriptionTV = view.findViewById<TextView>(R.id.description_tv_id)
             val dateTV = view.findViewById<TextView>(R.id.date_tv_id)
             val amountTV = view.findViewById<TextView>(R.id.amount_tv_id)
-            userNameTV.text = item2.userName
-            descriptionTV.text = item2.description
-            dateTV.text = item2.date
-            amountTV.text = item2.amount
+            val image = view.findViewById<ImageView>(R.id.profile_image)
+            userNameTV.text = item.userName
+            descriptionTV.text = item.description
+            dateTV.text = item.date
+            amountTV.text = item.amount
+            image.setImageResource(item.imageResourceId)
         }
 
         return view
@@ -82,5 +85,6 @@ data class Item(
     val description: String,
     val date: String,
     val amount: String,
-    val id: String
+    val id: String,
+    val imageResourceId: Int
 )

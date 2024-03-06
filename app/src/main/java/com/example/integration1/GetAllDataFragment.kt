@@ -228,7 +228,9 @@ class GetAllDataFragment : Fragment() {
                             itemData.getString("position2"),
                             itemData.getString("position3"),
                             itemData.getString("position4"),
-                            itemData.getString("position5")
+                            itemData.getString("position5"),
+                            R.mipmap.avatar12
+
                         )
                     )
                 }
