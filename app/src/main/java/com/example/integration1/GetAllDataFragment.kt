@@ -1,39 +1,39 @@
 package com.example.integration1
 
+import CustomAdapter
+import Item
+import Section
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.ListAdapter
 import android.widget.ListView
-import android.widget.SimpleAdapter
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class GetAllDataFragment : Fragment() {
 
     private lateinit var adapter: ListAdapter
     private lateinit var listView: ListView
     private val userDataViewModel: UserDataViewModel by activityViewModels()
+    private val groupedItemsJson = JSONObject()
 
-    private val contextTAG : String = "GetAllDataFragment"
+    private val contextTAG: String = "GetAllDataFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +42,8 @@ class GetAllDataFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_get_all_data, container, false)
         listView = v.findViewById(R.id.lv_items2)
         val roomActivity = activity as RoomActivity
+
+        getItems(roomActivity)
 
         // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
@@ -55,7 +57,6 @@ class GetAllDataFragment : Fragment() {
             popUpDetails(id, userName, date, amount, description)
         }
 
-        getItems(roomActivity)
         return v
     }
 
@@ -71,14 +72,16 @@ class GetAllDataFragment : Fragment() {
             Request.Method.GET, url + param,
             { response -> parseItems(response, roomActivity) }
         ) { }
-        val socketTimeOut = 50000
+
         val policy: RetryPolicy =
-            DefaultRetryPolicy(socketTimeOut, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            DefaultRetryPolicy(50000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         stringRequest.setRetryPolicy(policy)
         val queue = Volley.newRequestQueue(activity)
         queue.add(stringRequest)
     }
 
+
+    /*
     private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
         val list = ArrayList<HashMap<String, String?>>()
         try {
@@ -129,6 +132,136 @@ class GetAllDataFragment : Fragment() {
         listView.adapter = adapter
         roomActivity.alertDialog.dismiss()
     }
+
+     */
+
+
+    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
+        Log.d(contextTAG, "Entered in parseItems function")
+        Log.d(contextTAG, "jsonResponse :  $jsonResponse")
+        try {
+            val jsonObj = JSONObject(jsonResponse)
+            val jsonArray = jsonObj.getJSONArray("items")
+
+            for (i in 0 until jsonArray.length()) {
+                val jo1 = jsonArray.getJSONObject(i)
+
+                val jo2 = jo1.getJSONArray("records")
+
+                for (j in 0 until jo2.length()) {
+                    val jo = jo2.getJSONObject(j)
+
+                    val dateFormats = convertDateFormat(jo.getString("date"))
+                    val monthKey = dateFormats.format2
+
+                    if (groupedItemsJson.has(monthKey)) {
+                        val monthData =
+                            groupedItemsJson.getJSONObject(monthKey).getJSONArray("MonthData")
+                        val monthTotal =
+                            groupedItemsJson.getJSONObject(monthKey).getDouble("MonthTotal")
+
+                        val newData = JSONObject().apply {
+                            put("position1", jo.getString("userName"))
+                            put("position2", limitDescription(jo.getString("description")))
+                            put("position3", dateFormats.format1)
+                            put("position4", "₹ ${jo.getString("amount")}")
+                            put("position5", jo.getString("dataId"))
+                        }
+
+                        monthData.put(newData)
+                        groupedItemsJson.getJSONObject(monthKey)
+                            .put("MonthTotal", monthTotal + jo.getString("amount").toDouble())
+                    } else {
+                        val newDataArray = JSONArray()
+                        val newData = JSONObject().apply {
+                            put("position1", jo.getString("userName"))
+                            put("position2", limitDescription(jo.getString("description")))
+                            put("position3", dateFormats.format1)
+                            put("position4", "₹ ${jo.getString("amount")}")
+                            put("position5", jo.getString("dataId"))
+                        }
+                        newDataArray.put(newData)
+
+                        val monthObject = JSONObject().apply {
+                            put("MonthName", monthKey)
+                            put("MonthData", newDataArray)
+                            put("MonthTotal", jo.getString("amount").toDouble())
+                        }
+
+                        groupedItemsJson.put(monthKey, monthObject)
+                    }
+
+                }
+
+            }
+
+            val months = groupedItemsJson.keys().asSequence().toList()
+            val dateFormat = SimpleDateFormat("MMM yyyy", Locale.ENGLISH)
+            val dateList = months.map { dateFormat.parse(it) }
+            val sortedDescending = dateList.sortedDescending()
+            val sortedMonths = sortedDescending.map { dateFormat.format(it) }
+
+            categorizeItems(sortedMonths, roomActivity)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
+        val dataList = mutableListOf<Any>()
+        try {
+            for (i in months.indices) {
+                val monthJsonObject = groupedItemsJson.getJSONObject(months[i])
+                dataList.add(
+                    Section(
+                        monthJsonObject.getString("MonthName"),
+                        monthJsonObject.getString("MonthTotal")
+                    )
+                )
+
+                val monthData = monthJsonObject.getJSONArray("MonthData")
+                for (j in 0 until monthData.length()) {
+                    val itemData = monthData.getJSONObject(j)
+                    dataList.add(
+                        Item(
+                            itemData.getString("position1"),
+                            itemData.getString("position2"),
+                            itemData.getString("position3"),
+                            itemData.getString("position4"),
+                            itemData.getString("position5")
+                        )
+                    )
+                }
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        adapter = CustomAdapter(requireContext(), dataList)
+        listView.adapter = adapter
+
+        roomActivity.alertDialog.dismiss()
+    }
+
+    private fun limitDescription(description: String): String {
+        return if (description.length >= 20) "${description.substring(0, 20)}.." else description
+    }
+
+    private data class DateFormats(val format1: String, val format2: String)
+
+    private fun convertDateFormat(dateString: String): DateFormats {
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+        val date: Date = dateFormat.parse(dateString) ?: return DateFormats("", "")
+
+        val outputDateFormat1 = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val outputDateFormat2 = SimpleDateFormat("MMM yyyy", Locale.getDefault())
+
+        val formattedDate1 = outputDateFormat1.format(date)
+        val formattedDate2 = outputDateFormat2.format(date)
+
+        return DateFormats(formattedDate1, formattedDate2)
+    }
+
 
     private fun popUpDetails(
         id: String,

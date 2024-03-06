@@ -1,15 +1,31 @@
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.example.integration1.LoginActivity
 import com.example.integration1.R
+import java.io.File
 
 object ActivityUtils {
 
+    val fileName = "userdata.json"
+    val directoryName = "RoomBudget"
+    val directory = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+        directoryName
+    )
+    val file = File(directory, fileName)
+
     fun navigateToActivity(activity: Activity, intent: Intent) {
+        if(intent.component?.className == LoginActivity::class.java.name){
+            Log.i("Delete : ", "Entered in LoginActivity Navigation")
+            file.delete()
+        }
         activity.startActivity(intent)
     }
 

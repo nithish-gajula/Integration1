@@ -37,8 +37,8 @@ import java.util.Locale
 class GetDataFragment : Fragment() {
     private lateinit var adapter: ListAdapter
     private lateinit var listView: ListView
-    private lateinit var totalAmount: TextView
-    private lateinit var getIdET: EditText
+    private lateinit var totalAmountTV: TextView
+    private var totalAmount : Double = 0.0
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
@@ -52,7 +52,7 @@ class GetDataFragment : Fragment() {
     ): View? {
         val v = inflater.inflate(R.layout.fragment_get_data, container, false)
         listView = v.findViewById(R.id.lv_items)
-        totalAmount = v.findViewById(R.id.total_Amount_id)
+        totalAmountTV = v.findViewById(R.id.total_Amount_id)
         val roomActivity = activity as RoomActivity
         getItems(roomActivity)
 
@@ -184,19 +184,20 @@ class GetDataFragment : Fragment() {
                         groupedItemsJson.getJSONObject(monthKey).getDouble("MonthTotal")
 
                     val newData = JSONObject().apply {
-                        put("position1", "Nithish Gajula")
+                        put("position1", userDataViewModel.userName)
                         put("position2", limitDescription(jo.getString("description")))
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
                     }
+                    totalAmount += jo.getString("amount").toDouble()
                     monthData.put(newData)
                     groupedItemsJson.getJSONObject(monthKey)
                         .put("MonthTotal", monthTotal + jo.getString("amount").toDouble())
                 } else {
                     val newDataArray = JSONArray()
                     val newData = JSONObject().apply {
-                        put("position1", "Nithish Gajula")
+                        put("position1", userDataViewModel.userName)
                         put("position2", limitDescription(jo.getString("description")))
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
@@ -260,6 +261,7 @@ class GetDataFragment : Fragment() {
         listView.adapter = adapter
 
         roomActivity.alertDialog.dismiss()
+        totalAmountTV.text = totalAmount.toString()
     }
 
     private fun limitDescription(description: String): String {
@@ -330,7 +332,6 @@ class GetDataFragment : Fragment() {
                             dialog1.dismiss()
                             getItems(roomActivity)
                         }, 2000)
-                        getIdET.setText("")
                         Toast.makeText(activity, response, Toast.LENGTH_SHORT).show()
                     },
                     Response.ErrorListener {

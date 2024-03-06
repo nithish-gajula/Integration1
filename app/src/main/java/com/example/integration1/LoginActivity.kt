@@ -1,8 +1,8 @@
 package com.example.integration1
 
+import ActivityUtils
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -25,7 +25,6 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.text.DateFormat
@@ -39,8 +38,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginBTN: Button
     private lateinit var resultTV: TextView
     private lateinit var requestQueue: RequestQueue
-    private val fileName = "userdata.json"
-    private val directoryName = "RoomBudget"
     private lateinit var animationView: LottieAnimationView
     private lateinit var alertDialog: AlertDialog
 
@@ -184,17 +181,26 @@ class LoginActivity : AppCompatActivity() {
 
                             if (roomId == "0" || roomId.isEmpty()) {
                                 Log.d(contextTAG, "Entered in if condition - roomId is not good")
-                                ActivityUtils.navigateToActivity(this, Intent(this, MainActivity::class.java))
+                                ActivityUtils.navigateToActivity(
+                                    this,
+                                    Intent(this, MainActivity::class.java)
+                                )
                             } else {
                                 Log.d(contextTAG, "Entered in else condition - roomId is good")
-                                ActivityUtils.navigateToActivity(this, Intent(this, RoomActivity::class.java))
+                                ActivityUtils.navigateToActivity(
+                                    this,
+                                    Intent(this, RoomActivity::class.java)
+                                )
                             }
                         }, 2000)
 
                     }
 
                     emailStatus.toBoolean() && !passwordStatus.toBoolean() -> {
-                        Log.d(contextTAG, "login failed for ${getString(R.string.incorrect_password)}")
+                        Log.d(
+                            contextTAG,
+                            "login failed for ${getString(R.string.incorrect_password)}"
+                        )
                         animationView.setAnimation(R.raw.error)
                         animationView.playAnimation()
                         resultTV.visibility = View.VISIBLE
@@ -202,7 +208,10 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        Log.d(contextTAG, "login failed for ${getString(R.string.no_user_data_found)}")
+                        Log.d(
+                            contextTAG,
+                            "login failed for ${getString(R.string.no_user_data_found)}"
+                        )
                         animationView.setAnimation(R.raw.error)
                         animationView.playAnimation()
                         resultTV.visibility = View.VISIBLE
@@ -223,24 +232,20 @@ class LoginActivity : AppCompatActivity() {
 
     private fun createAndWriteToFile(userData: JSONObject) {
         Log.i(contextTAG, "Entered in createAndWriteToFile Function")
-        val directory = File(
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-            directoryName
-        )
-        val file = File(directory, fileName)
 
-        if (!directory.exists()) {
+        if (!ActivityUtils.directory.exists()) {
             Log.i(contextTAG, "Directory not exists, Creating Directory")
-            directory.mkdirs()
+            ActivityUtils.directory.mkdirs()
         }
-        if (!file.exists()) {
+        if (!ActivityUtils.file.exists()) {
             Log.i(contextTAG, "File not exists, Creating File")
-            file.createNewFile()
+            ActivityUtils.file.createNewFile()
         }
 
         try {
             userData.put("loginTime", DateFormat.getDateTimeInstance().format(Date()).toString())
-            FileWriter(file).use { it.write(userData.toString()) }
+            FileWriter(ActivityUtils.file).use { it.write(userData.toString()) }
+            Log.i(contextTAG, "userData :  $userData")
 
         } catch (e: IOException) {
             e.printStackTrace()

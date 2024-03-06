@@ -45,13 +45,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var requestQueue: RequestQueue
 
     private lateinit var userDataViewModel: UserDataViewModel
-    private val fileName = "userdata.json"
-    private val directoryName = "RoomBudget"
-    private val directory = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-        directoryName
-    )
-    private val file = File(directory, fileName)
     private lateinit var animationView: LottieAnimationView
     private lateinit var alertDialog: AlertDialog
     private lateinit var customOverflowIcon: ImageView
@@ -496,13 +489,13 @@ class MainActivity : AppCompatActivity() {
         Log.i(contextTAG, "Entered storeRoomIdAndAdminStatus Function")
         try {
 
-            val content = file.readText()
+            val content = ActivityUtils.file.readText()
             val userData = JSONObject(content)
 
             userData.put("roomId", roomID)
             userData.put("adminStatus", adminStatus)
 
-            FileWriter(file).use { fileWriter ->
+            FileWriter(ActivityUtils.file).use { fileWriter ->
                 fileWriter.write(userData.toString())
                 fileWriter.flush()
             }
@@ -516,12 +509,12 @@ class MainActivity : AppCompatActivity() {
         Log.i(contextTAG, "Entered storeRoomId Function")
         try {
 
-            val content = file.readText()
+            val content = ActivityUtils.file.readText()
             val userData = JSONObject(content)
 
             userData.put("roomId", roomID)
 
-            FileWriter(file).use { fileWriter ->
+            FileWriter(ActivityUtils.file).use { fileWriter ->
                 fileWriter.write(userData.toString())
                 fileWriter.flush()
             }

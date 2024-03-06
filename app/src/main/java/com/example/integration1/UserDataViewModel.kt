@@ -1,28 +1,20 @@
 package com.example.integration1
 
+import ActivityUtils
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.os.Environment
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 import java.io.IOException
 
 class UserDataViewModel : ViewModel() {
 
 
-    private val fileName = "userdata.json"
-    private val directoryName = "RoomBudget"
-    private val directory = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-        directoryName
-    )
-    private val file = File(directory, fileName)
     var isDirExist = true // false - Not exist, true - exist(default)
     var isFileExist = true // false - Not exist, true - exist(default)
     var isRoomLengthLessThanOne = false // false(default)
@@ -86,15 +78,15 @@ class UserDataViewModel : ViewModel() {
     private fun loadUserData() {
         Log.i(contextTAG, "Entered in loadUserData Function")
 
-        if (!directory.exists()) {
+        if (!ActivityUtils.directory.exists()) {
             isDirExist = false
         }
-        if (!file.exists()) {
+        if (!ActivityUtils.file.exists()) {
             isFileExist = false
         }
 
         try {
-            val content = file.readText()
+            val content = ActivityUtils.file.readText()
             val userData = JSONObject(content)
 
 
