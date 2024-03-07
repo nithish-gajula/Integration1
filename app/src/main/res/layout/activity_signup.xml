@@ -132,6 +132,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="5dp"
+        android:textColor="@color/white"
         android:backgroundTint="#0076F7"
         android:fontFamily="sans-serif-medium"
         android:text="SignUp"

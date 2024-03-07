@@ -189,7 +189,7 @@ class GetDataFragment : Fragment() {
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
-                        put("position6", generateRandomNumber())
+                        put("position6", jo.getString("foodId"))
                     }
                     totalAmount += jo.getString("amount").toDouble()
                     monthData.put(newData)
@@ -203,7 +203,7 @@ class GetDataFragment : Fragment() {
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
-                        put("position6", generateRandomNumber())
+                        put("position6", jo.getString("foodId"))
                     }
                     newDataArray.put(newData)
 
@@ -258,7 +258,7 @@ class GetDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getInt("position6")]
+                            avatars[itemData.getString("position6").toInt()]
                         )
                     )
                 }

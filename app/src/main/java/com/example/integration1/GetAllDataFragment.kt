@@ -167,7 +167,7 @@ class GetAllDataFragment : Fragment() {
                             put("position3", dateFormats.format1)
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
-                            put("position6", generateRandomNumber())
+                            put("position6", jo.getString("profileId"))
                         }
 
                         monthData.put(newData)
@@ -181,7 +181,7 @@ class GetAllDataFragment : Fragment() {
                             put("position3", dateFormats.format1)
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
-                            put("position6", generateRandomNumber())
+                            put("position6", jo.getString("profileId"))
                         }
                         newDataArray.put(newData)
 

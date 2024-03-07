@@ -175,6 +175,8 @@ class AddDataFragment : Fragment() {
                             "date" to dateFormat(dateVal),
                             "amount" to amountVal,
                             "description" to descriptionVal,
+                            "foodId" to "0",
+                            "profileId" to userDataViewModel.profileId
                         )
                     }
                 }

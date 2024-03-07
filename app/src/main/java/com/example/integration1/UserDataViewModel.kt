@@ -28,6 +28,7 @@ class UserDataViewModel : ViewModel() {
     private lateinit var loginTime: String
     lateinit var roomId: String
     private lateinit var adminStatus: String
+    lateinit var profileId: String
 
     private val contextTAG: String = "UserDataViewModel"
 
@@ -99,6 +100,7 @@ class UserDataViewModel : ViewModel() {
             loginTime = userData.getString("loginTime")
             roomId = userData.getString("roomId")
             adminStatus = userData.getString("adminStatus")
+            profileId = userData.getString("profileId")
 
             Log.i(contextTAG,"userId :  $userId")
             Log.i(contextTAG,"userName :  $userName")
@@ -108,6 +110,7 @@ class UserDataViewModel : ViewModel() {
             Log.i(contextTAG,"loginTime :  $loginTime")
             Log.i(contextTAG,"roomId :  $roomId")
             Log.i(contextTAG,"adminStatus :  $adminStatus")
+            Log.i(contextTAG,"profileId :  $profileId")
 
             if (roomId.length <= 1) {
                 isRoomLengthLessThanOne = true
