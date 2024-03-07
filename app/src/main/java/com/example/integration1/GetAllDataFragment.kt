@@ -25,6 +25,7 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 class GetAllDataFragment : Fragment() {
 
@@ -166,6 +167,7 @@ class GetAllDataFragment : Fragment() {
                             put("position3", dateFormats.format1)
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
+                            put("position6", generateRandomNumber())
                         }
 
                         monthData.put(newData)
@@ -179,6 +181,7 @@ class GetAllDataFragment : Fragment() {
                             put("position3", dateFormats.format1)
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
+                            put("position6", generateRandomNumber())
                         }
                         newDataArray.put(newData)
 
@@ -209,6 +212,24 @@ class GetAllDataFragment : Fragment() {
 
     private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
         val dataList = mutableListOf<Any>()
+        val avatars = intArrayOf(
+            R.mipmap.avatar1,
+            R.mipmap.avatar2,
+            R.mipmap.avatar3,
+            R.mipmap.avatar4,
+            R.mipmap.avatar5,
+            R.mipmap.avatar6,
+            R.mipmap.avatar7,
+            R.mipmap.avatar8,
+            R.mipmap.avatar9,
+            R.mipmap.avatar10,
+            R.mipmap.avatar11,
+            R.mipmap.avatar12,
+            R.mipmap.avatar13,
+            R.mipmap.avatar14,
+            R.mipmap.avatar15,
+            R.mipmap.avatar16
+        )
         try {
             for (i in months.indices) {
                 val monthJsonObject = groupedItemsJson.getJSONObject(months[i])
@@ -229,7 +250,7 @@ class GetAllDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            R.mipmap.avatar12
+                            avatars[itemData.getInt("position6")]
 
                         )
                     )
@@ -243,6 +264,10 @@ class GetAllDataFragment : Fragment() {
         listView.adapter = adapter
 
         roomActivity.alertDialog.dismiss()
+    }
+
+    private fun generateRandomNumber(): Int {
+        return Random.nextInt(0, 16)
     }
 
     private fun limitDescription(description: String): String {

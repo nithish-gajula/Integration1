@@ -6,6 +6,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.integration1.R
+import com.google.android.material.imageview.ShapeableImageView
 
 class CustomAdapter(private val context: Context, private val dataList: List<Any>) :
     BaseAdapter() {
@@ -54,7 +55,7 @@ class CustomAdapter(private val context: Context, private val dataList: List<Any
             val descriptionTV = view.findViewById<TextView>(R.id.description_tv_id)
             val dateTV = view.findViewById<TextView>(R.id.date_tv_id)
             val amountTV = view.findViewById<TextView>(R.id.amount_tv_id)
-            val image = view.findViewById<ImageView>(R.id.profile_image)
+            val image = view.findViewById<ShapeableImageView>(R.id.profile_image)
             userNameTV.text = item.userName
             descriptionTV.text = item.description
             dateTV.text = item.date

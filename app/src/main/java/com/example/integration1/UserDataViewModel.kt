@@ -100,6 +100,15 @@ class UserDataViewModel : ViewModel() {
             roomId = userData.getString("roomId")
             adminStatus = userData.getString("adminStatus")
 
+            Log.i(contextTAG,"userId :  $userId")
+            Log.i(contextTAG,"userName :  $userName")
+            Log.i(contextTAG,"age :  $age")
+            Log.i(contextTAG,"email :  $email")
+            Log.i(contextTAG,"phoneNumber :  $phoneNumber")
+            Log.i(contextTAG,"loginTime :  $loginTime")
+            Log.i(contextTAG,"roomId :  $roomId")
+            Log.i(contextTAG,"adminStatus :  $adminStatus")
+
             if (roomId.length <= 1) {
                 isRoomLengthLessThanOne = true
             }

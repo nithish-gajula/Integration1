@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ListAdapter
 import android.widget.ListView
@@ -33,12 +32,13 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.random.Random
 
 class GetDataFragment : Fragment() {
     private lateinit var adapter: ListAdapter
     private lateinit var listView: ListView
     private lateinit var totalAmountTV: TextView
-    private var totalAmount : Double = 0.0
+    private var totalAmount: Double = 0.0
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
@@ -189,6 +189,7 @@ class GetDataFragment : Fragment() {
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
+                        put("position6", generateRandomNumber())
                     }
                     totalAmount += jo.getString("amount").toDouble()
                     monthData.put(newData)
@@ -202,6 +203,7 @@ class GetDataFragment : Fragment() {
                         put("position3", dateFormats.format1)
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
+                        put("position6", generateRandomNumber())
                     }
                     newDataArray.put(newData)
 
@@ -229,6 +231,12 @@ class GetDataFragment : Fragment() {
 
     private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
         val dataList = mutableListOf<Any>()
+        val avatars = intArrayOf(
+            R.mipmap.food1,
+            R.mipmap.food2,
+            R.mipmap.food3
+        )
+
         try {
             for (i in months.indices) {
                 val monthJsonObject = groupedItemsJson.getJSONObject(months[i])
@@ -242,6 +250,7 @@ class GetDataFragment : Fragment() {
                 val monthData = monthJsonObject.getJSONArray("MonthData")
                 for (j in 0 until monthData.length()) {
                     val itemData = monthData.getJSONObject(j)
+                    Log.d(contextTAG, "itemData :  $itemData")
                     dataList.add(
                         Item(
                             itemData.getString("position1"),
@@ -249,7 +258,7 @@ class GetDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            R.mipmap.avatar1
+                            avatars[itemData.getInt("position6")]
                         )
                     )
                 }
@@ -263,6 +272,10 @@ class GetDataFragment : Fragment() {
 
         roomActivity.alertDialog.dismiss()
         totalAmountTV.text = totalAmount.toString()
+    }
+
+    private fun generateRandomNumber(): Int {
+        return Random.nextInt(0, 3)
     }
 
     private fun limitDescription(description: String): String {
