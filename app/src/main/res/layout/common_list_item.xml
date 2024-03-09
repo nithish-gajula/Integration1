@@ -3,17 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="80dp">
 
-<!--    <com.google.android.material.imageview.ShapeableImageView-->
-<!--        android:id="@+id/profile_image"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"-->
-<!--        app:strokeColor="@color/grey"-->
-<!--        app:strokeWidth="1dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"/>-->
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_image"
         android:layout_width="50dp"

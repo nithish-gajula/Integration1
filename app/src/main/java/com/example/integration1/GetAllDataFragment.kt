@@ -36,6 +36,15 @@ class GetAllDataFragment : Fragment() {
 
     private val contextTAG: String = "GetAllDataFragment"
 
+    /****** Implement below things ****
+    Groceries
+    Vegetables
+    Non veg (meat)
+    Shopping
+    Movies
+    Party
+    Travelling */
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -224,11 +233,7 @@ class GetAllDataFragment : Fragment() {
             R.mipmap.avatar9,
             R.mipmap.avatar10,
             R.mipmap.avatar11,
-            R.mipmap.avatar12,
-            R.mipmap.avatar13,
-            R.mipmap.avatar14,
-            R.mipmap.avatar15,
-            R.mipmap.avatar16
+            R.mipmap.avatar12
         )
         try {
             for (i in months.indices) {
@@ -250,7 +255,7 @@ class GetAllDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getInt("position6")]
+                            avatars[itemData.getInt("position6")-1]
 
                         )
                     )
@@ -267,7 +272,7 @@ class GetAllDataFragment : Fragment() {
     }
 
     private fun generateRandomNumber(): Int {
-        return Random.nextInt(0, 16)
+        return Random.nextInt(1, 13)
     }
 
     private fun limitDescription(description: String): String {

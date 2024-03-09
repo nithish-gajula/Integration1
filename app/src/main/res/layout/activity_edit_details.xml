@@ -17,7 +17,14 @@
         android:textStyle="bold"
         android:textSize="40dp" />
 
-
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_image_id"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
+        android:src="@drawable/ic_instagram_16" />
 
     <com.google.android.material.textfield.TextInputLayout
 
@@ -36,7 +43,6 @@
             android:layout_height="wrap_content"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
-
 
 
     <com.google.android.material.textfield.TextInputLayout

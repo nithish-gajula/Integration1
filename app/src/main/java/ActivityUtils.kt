@@ -21,6 +21,21 @@ object ActivityUtils {
     )
     val file = File(directory, fileName)
 
+    val avatars = intArrayOf(
+        R.mipmap.avatar1,
+        R.mipmap.avatar2,
+        R.mipmap.avatar3,
+        R.mipmap.avatar4,
+        R.mipmap.avatar5,
+        R.mipmap.avatar6,
+        R.mipmap.avatar7,
+        R.mipmap.avatar8,
+        R.mipmap.avatar9,
+        R.mipmap.avatar10,
+        R.mipmap.avatar11,
+        R.mipmap.avatar12,
+    )
+
     fun navigateToActivity(activity: Activity, intent: Intent) {
         if(intent.component?.className == LoginActivity::class.java.name){
             Log.i("Delete : ", "Entered in LoginActivity Navigation")

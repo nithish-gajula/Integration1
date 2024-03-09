@@ -13,9 +13,5 @@
         <item>@mipmap/avatar10</item>
         <item>@mipmap/avatar11</item>
         <item>@mipmap/avatar12</item>
-        <item>@mipmap/avatar13</item>
-        <item>@mipmap/avatar14</item>
-        <item>@mipmap/avatar15</item>
-        <item>@mipmap/avatar16</item>
     </integer-array>
 </resources>

@@ -144,6 +144,7 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="#008700"
+                android:textColor="@color/white"
                 android:fontFamily="sans-serif-medium"
                 android:text="Upload"
                 android:textSize="18sp"

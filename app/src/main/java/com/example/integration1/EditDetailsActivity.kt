@@ -1,5 +1,6 @@
 package com.example.integration1
 
+import ActivityUtils
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -19,6 +21,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textfield.TextInputLayout
 
 class EditDetailsActivity : AppCompatActivity() {
@@ -31,10 +34,12 @@ class EditDetailsActivity : AppCompatActivity() {
     private lateinit var saveBTN: Button
     private lateinit var resultTV: TextView
     private lateinit var resetPasswordTV: TextView
+    private lateinit var profileImage : ShapeableImageView
     private lateinit var requestQueue: RequestQueue
     private var contextTAG: String = "EditDetails"
     private lateinit var animationView: LottieAnimationView
     private lateinit var alertDialog: AlertDialog
+    private var latestProfileImage : Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,7 @@ class EditDetailsActivity : AppCompatActivity() {
 
         userDataViewModel = ViewModelProvider(this)[UserDataViewModel::class.java]
 
+        profileImage = findViewById(R.id.profile_image_id)
         nameET = findViewById(R.id.name_et_id)
         emailET = findViewById(R.id.email_et_id)
         phoneNumberET = findViewById(R.id.phone_no_et_id)
@@ -59,6 +65,10 @@ class EditDetailsActivity : AppCompatActivity() {
         phoneNumberTIL.setStartIconTintList(null)
         ageTIL.setStartIconTintList(null)
 
+        latestProfileImage = userDataViewModel.profileId.toInt()
+        profileImage.setImageResource(ActivityUtils.avatars[userDataViewModel.profileId.toInt()-1])
+
+
         val dialogBuilder = AlertDialog.Builder(this)
         val inflater = LayoutInflater.from(this)
         val dialogView = inflater.inflate(R.layout.loading_box, null)
@@ -72,8 +82,119 @@ class EditDetailsActivity : AppCompatActivity() {
         phoneNumberET.setText(userDataViewModel.phoneNumber)
         ageET.setText(userDataViewModel.age)
 
+        profileImage.setOnClickListener { selectImagePopUp() }
         saveBTN.setOnClickListener { savaDataFunction() }
         resetPasswordTV.setOnClickListener { ActivityUtils.navigateToActivity(this, Intent(this, ForgotPasswordActivity::class.java)) }
+
+    }
+
+    private fun selectImagePopUp(){
+        Toast.makeText(this, "profile Image Clicked",Toast.LENGTH_SHORT).show()
+
+        val builder = AlertDialog.Builder(this)
+        val view: View = layoutInflater.inflate(R.layout.select_profile_image, null)
+        val avatar1 = view.findViewById<ShapeableImageView>(R.id.select_avatar_1_id)
+        val avatar2 = view.findViewById<ShapeableImageView>(R.id.select_avatar_2_id)
+        val avatar3 = view.findViewById<ShapeableImageView>(R.id.select_avatar_3_id)
+        val avatar4 = view.findViewById<ShapeableImageView>(R.id.select_avatar_4_id)
+        val avatar5 = view.findViewById<ShapeableImageView>(R.id.select_avatar_5_id)
+        val avatar6 = view.findViewById<ShapeableImageView>(R.id.select_avatar_6_id)
+        val avatar7 = view.findViewById<ShapeableImageView>(R.id.select_avatar_7_id)
+        val avatar8 = view.findViewById<ShapeableImageView>(R.id.select_avatar_8_id)
+        val avatar9 = view.findViewById<ShapeableImageView>(R.id.select_avatar_9_id)
+        val avatar10 = view.findViewById<ShapeableImageView>(R.id.select_avatar_10_id)
+        val avatar11 = view.findViewById<ShapeableImageView>(R.id.select_avatar_11_id)
+        val avatar12 = view.findViewById<ShapeableImageView>(R.id.select_avatar_12_id)
+
+        builder.setView(view)
+        val dialog = builder.create()
+
+        avatar1.setOnClickListener {
+            latestProfileImage = 1
+            profileImage.setImageDrawable(avatar1.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar2.setOnClickListener {
+            latestProfileImage = 2
+            profileImage.setImageDrawable(avatar2.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar3.setOnClickListener {
+            latestProfileImage = 3
+            profileImage.setImageDrawable(avatar3.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar4.setOnClickListener {
+            latestProfileImage = 4
+            profileImage.setImageDrawable(avatar4.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar5.setOnClickListener {
+            latestProfileImage = 5
+            profileImage.setImageDrawable(avatar5.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar6.setOnClickListener {
+            latestProfileImage = 6
+            profileImage.setImageDrawable(avatar6.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar7.setOnClickListener {
+            latestProfileImage = 7
+            profileImage.setImageDrawable(avatar7.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar8.setOnClickListener {
+            latestProfileImage = 8
+            profileImage.setImageDrawable(avatar8.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar9.setOnClickListener {
+            latestProfileImage = 9
+            profileImage.setImageDrawable(avatar9.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar10.setOnClickListener {
+            latestProfileImage = 10
+            profileImage.setImageDrawable(avatar10.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar11.setOnClickListener {
+            latestProfileImage = 11
+            profileImage.setImageDrawable(avatar11.drawable)
+            dialog.dismiss()
+
+        }
+
+        avatar12.setOnClickListener {
+            latestProfileImage = 12
+            profileImage.setImageDrawable(avatar12.drawable)
+            dialog.dismiss()
+
+        }
+
+        dialog.show()
+
 
     }
 
@@ -128,7 +249,8 @@ class EditDetailsActivity : AppCompatActivity() {
                     "userName" to name,
                     "email" to email,
                     "phoneNumber" to phoneNumber,
-                    "age" to age
+                    "age" to age,
+                    "profileId" to latestProfileImage.toString()
                 )
             }
         }
