@@ -39,6 +39,7 @@ class GetDataFragment : Fragment() {
     private lateinit var listView: ListView
     private lateinit var totalAmountTV: TextView
     private var totalAmount: Double = 0.0
+    private lateinit var emptyWaring : TextView
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
@@ -53,6 +54,7 @@ class GetDataFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_get_data, container, false)
         listView = v.findViewById(R.id.lv_items)
         totalAmountTV = v.findViewById(R.id.total_Amount_id)
+        emptyWaring = v.findViewById(R.id.get_data_empty_warning_id)
         val roomActivity = activity as RoomActivity
         getItems(roomActivity)
 
@@ -174,6 +176,13 @@ class GetDataFragment : Fragment() {
 
             for (i in 0 until jsonArray.length()) {
                 val jo = jsonArray.getJSONObject(i)
+
+                if(jo.getString("dataId") == "null" && jo.getString("date") == "null" && jo.getString("amount") == "null"  ){
+                    emptyWaring.visibility = View.VISIBLE
+                    roomActivity.alertDialog.dismiss()
+                    return
+                }
+
                 val dateFormats = convertDateFormat(jo.getString("date"))
                 val monthKey = dateFormats.format2
 
@@ -232,9 +241,22 @@ class GetDataFragment : Fragment() {
     private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
         val dataList = mutableListOf<Any>()
         val avatars = intArrayOf(
-            R.mipmap.food1,
-            R.mipmap.food2,
-            R.mipmap.food3
+            R.drawable.food_1,
+            R.drawable.food_2,
+            R.drawable.food_3,
+            R.drawable.food_4,
+            R.drawable.food_5,
+            R.drawable.food_6,
+            R.drawable.food_7,
+            R.drawable.food_8,
+            R.drawable.food_9,
+            R.drawable.food_10,
+            R.drawable.food_11,
+            R.drawable.food_12,
+            R.drawable.food_13,
+            R.drawable.food_14,
+            R.drawable.food_15,
+            R.drawable.food_16
         )
 
         try {
@@ -258,7 +280,7 @@ class GetDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getString("position6").toInt()]
+                            avatars[itemData.getString("position6").toInt()-1]
                         )
                     )
                 }

@@ -371,8 +371,8 @@ class MainActivity : AppCompatActivity() {
             override fun getParams(): Map<String, String> {
                 return hashMapOf(
                     "action" to "createRoom",
-                    "id" to userDataViewModel.userId,
-                    "roomID" to createRoomId(),
+                    "userId" to userDataViewModel.userId,
+                    "roomId" to createRoomId(),
                 )
             }
         }

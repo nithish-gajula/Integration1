@@ -16,6 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Response
@@ -24,6 +28,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Calendar
+import kotlin.math.abs
 
 class AddDataFragment : Fragment() {
     private lateinit var simplifiedDescription: String
@@ -34,6 +39,10 @@ class AddDataFragment : Fragment() {
     private lateinit var id: String
     private lateinit var userName: String
     private lateinit var roomId: String
+    private lateinit var viewPager2: ViewPager2
+    private lateinit var imageList: ArrayList<Int>
+    private lateinit var adapter: ImageAdapter
+    private var foodId : Int = 0
 
     private val contextTAG : String = "AddDataFragment"
 
@@ -51,6 +60,33 @@ class AddDataFragment : Fragment() {
         amount = v.findViewById(R.id.amountid)
         description = v.findViewById(R.id.descriptionid)
         date = v.findViewById(R.id.dateid)
+
+        viewPager2 = v.findViewById(R.id.viewpagerImageSlider_id)
+        imageList = ArrayList()
+
+        imageList.add(R.drawable.food_1)
+        imageList.add(R.drawable.food_2)
+        imageList.add(R.drawable.food_3)
+        imageList.add(R.drawable.food_4)
+        imageList.add(R.drawable.food_5)
+        imageList.add(R.drawable.food_6)
+        imageList.add(R.drawable.food_7)
+        imageList.add(R.drawable.food_8)
+        imageList.add(R.drawable.food_9)
+        imageList.add(R.drawable.food_10)
+        imageList.add(R.drawable.food_11)
+        imageList.add(R.drawable.food_12)
+        imageList.add(R.drawable.food_13)
+        imageList.add(R.drawable.food_14)
+        imageList.add(R.drawable.food_15)
+        imageList.add(R.drawable.food_16)
+
+        adapter = ImageAdapter(imageList, viewPager2)
+        viewPager2.adapter = adapter
+        viewPager2.offscreenPageLimit = 3
+        viewPager2.clipToPadding = false
+        viewPager2.clipChildren = false
+        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
 
         val dateTil = v.findViewById<TextInputLayout>(R.id.date_til)
         val amountTil = v.findViewById<TextInputLayout>(R.id.amount_til)
@@ -100,9 +136,29 @@ class AddDataFragment : Fragment() {
             description.setText("")
         }
 
+        setupTransformer()
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                foodId = position + 1
+                Log.d(contextTAG, "FoodID : $foodId")
+            }
+        })
+
 
 
         return v
+    }
+
+    private fun setupTransformer() {
+        val transformer = CompositePageTransformer()
+        transformer.addTransformer(MarginPageTransformer(40))
+        transformer.addTransformer{ page, position ->
+            val r = 1 - abs(position)
+            page.scaleY = 0.85f + r * 0.14f
+        }
+        viewPager2.setPageTransformer(transformer)
     }
 
     private fun dateFormat(dateString: String): String {
@@ -175,7 +231,7 @@ class AddDataFragment : Fragment() {
                             "date" to dateFormat(dateVal),
                             "amount" to amountVal,
                             "description" to descriptionVal,
-                            "foodId" to "0",
+                            "foodId" to foodId.toString(),
                             "profileId" to userDataViewModel.profileId
                         )
                     }

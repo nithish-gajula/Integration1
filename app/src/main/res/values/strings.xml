@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Integration1</string>
 
-    <string name="spreadsheet_url">https://script.google.com/macros/s/AKfycbwLXJ9ubr1lbQ5GWdhayopUqTEUubqnetg_Ekh62aqZrtM65NtI039OQbDw1_jsyp5w/exec</string>
+    <string name="spreadsheet_url">https://script.google.com/macros/s/AKfycbzQVm_zAThUxNXUfjcrADGm-6mokdArB_qwrzkaqK-HknmlBgFTtwHolBfed-KiwRhk/exec</string>
 
     <string name="incorrect_password">Incorrect Password</string>
     <string name="no_data_found">No Data Found</string>

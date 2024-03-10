@@ -54,5 +54,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     implementation("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.makeramen:roundedimageview:2.3.0")
 }
 
