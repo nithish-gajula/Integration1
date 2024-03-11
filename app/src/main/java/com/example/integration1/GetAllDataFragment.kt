@@ -33,6 +33,7 @@ class GetAllDataFragment : Fragment() {
     private lateinit var listView: ListView
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
+    private lateinit var warningTV : TextView
 
     private val contextTAG: String = "GetAllDataFragment"
 
@@ -52,19 +53,23 @@ class GetAllDataFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_get_all_data, container, false)
         listView = v.findViewById(R.id.lv_items2)
         val roomActivity = activity as RoomActivity
+        warningTV = v.findViewById(R.id.get_all_data_warning_id)
 
         getItems(roomActivity)
 
         // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position) as HashMap<*, *>
-            val userName = selectedItem["position1"].toString()
-            val description = selectedItem["position2"].toString()
-            val date = selectedItem["position3"].toString()
-            val amount = selectedItem["position4"].toString()
-            val id = selectedItem["position5"].toString()
+            val selectedItem = parent.getItemAtPosition(position)
+            if (selectedItem is Item) {
+                Log.d(contextTAG, "Entered in listView onclick if condition")
+                val userName = selectedItem.userName
+                val description = selectedItem.description
+                val date = selectedItem.date
+                val amount = selectedItem.amount
+                val id = selectedItem.id
 
-            popUpDetails(id, userName, date, amount, description)
+                popUpDetails(id, userName, date, amount, description)
+            }
         }
 
         return v
@@ -215,6 +220,9 @@ class GetAllDataFragment : Fragment() {
 
             categorizeItems(sortedMonths, roomActivity)
         } catch (e: JSONException) {
+            warningTV.visibility = View.VISIBLE
+            warningTV.text = jsonResponse
+            roomActivity.alertDialog.dismiss()
             e.printStackTrace()
         }
     }

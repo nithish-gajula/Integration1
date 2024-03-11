@@ -39,7 +39,7 @@ class GetDataFragment : Fragment() {
     private lateinit var listView: ListView
     private lateinit var totalAmountTV: TextView
     private var totalAmount: Double = 0.0
-    private lateinit var emptyWaring : TextView
+    private lateinit var warningTV : TextView
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
@@ -54,22 +54,24 @@ class GetDataFragment : Fragment() {
         val v = inflater.inflate(R.layout.fragment_get_data, container, false)
         listView = v.findViewById(R.id.lv_items)
         totalAmountTV = v.findViewById(R.id.total_Amount_id)
-        emptyWaring = v.findViewById(R.id.get_data_empty_warning_id)
+        warningTV = v.findViewById(R.id.get_data_warning_id)
         val roomActivity = activity as RoomActivity
         getItems(roomActivity)
 
         // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position) as HashMap<*, *>
-            val userName = selectedItem["position1"].toString()
-            val description = selectedItem["position2"].toString()
-            val date = selectedItem["position3"].toString()
-            val amount = selectedItem["position4"].toString()
-            val id = selectedItem["position5"].toString()
+            val selectedItem = parent.getItemAtPosition(position)
+            if (selectedItem is Item) {
+                Log.d(contextTAG, "Entered in listView onclick if condition")
+                val userName = selectedItem.userName
+                val description = selectedItem.description
+                val date = selectedItem.date
+                val amount = selectedItem.amount
+                val id = selectedItem.id
 
-            delete(id, userName, date, amount, description, roomActivity)
+                delete(id, userName, date, amount, description, roomActivity)
+            }
         }
-
         return v
     }
 
@@ -177,12 +179,6 @@ class GetDataFragment : Fragment() {
             for (i in 0 until jsonArray.length()) {
                 val jo = jsonArray.getJSONObject(i)
 
-                if(jo.getString("dataId") == "null" && jo.getString("date") == "null" && jo.getString("amount") == "null"  ){
-                    emptyWaring.visibility = View.VISIBLE
-                    roomActivity.alertDialog.dismiss()
-                    return
-                }
-
                 val dateFormats = convertDateFormat(jo.getString("date"))
                 val monthKey = dateFormats.format2
 
@@ -234,6 +230,9 @@ class GetDataFragment : Fragment() {
 
             categorizeItems(sortedMonths, roomActivity)
         } catch (e: JSONException) {
+            warningTV.visibility = View.VISIBLE
+            warningTV.text = jsonResponse
+            roomActivity.alertDialog.dismiss()
             e.printStackTrace()
         }
     }
