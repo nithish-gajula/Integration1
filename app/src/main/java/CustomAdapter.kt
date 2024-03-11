@@ -87,5 +87,6 @@ data class Item(
     val date: String,
     val amount: String,
     val id: String,
-    val imageResourceId: Int
+    val imageResourceId: Int,
+    val fullDescription: String
 )

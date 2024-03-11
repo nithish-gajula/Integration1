@@ -67,8 +67,9 @@ class GetAllDataFragment : Fragment() {
                 val date = selectedItem.date
                 val amount = selectedItem.amount
                 val id = selectedItem.id
+                val fullDescription = selectedItem.fullDescription
 
-                popUpDetails(id, userName, date, amount, description)
+                popUpDetails(id, userName, date, amount, fullDescription)
             }
         }
 
@@ -182,6 +183,7 @@ class GetAllDataFragment : Fragment() {
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
                             put("position6", jo.getString("profileId"))
+                            put("position7", jo.getString("description"))
                         }
 
                         monthData.put(newData)
@@ -196,6 +198,7 @@ class GetAllDataFragment : Fragment() {
                             put("position4", "₹ ${jo.getString("amount")}")
                             put("position5", jo.getString("dataId"))
                             put("position6", jo.getString("profileId"))
+                            put("position7", jo.getString("description"))
                         }
                         newDataArray.put(newData)
 
@@ -263,7 +266,9 @@ class GetAllDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getInt("position6")-1]
+                            avatars[itemData.getInt("position6")-1],
+                            itemData.getString("position7")
+
 
                         )
                     )
@@ -277,10 +282,6 @@ class GetAllDataFragment : Fragment() {
         listView.adapter = adapter
 
         roomActivity.alertDialog.dismiss()
-    }
-
-    private fun generateRandomNumber(): Int {
-        return Random.nextInt(1, 13)
     }
 
     private fun limitDescription(description: String): String {
@@ -308,11 +309,11 @@ class GetAllDataFragment : Fragment() {
         userName: String,
         date: String,
         amount: String,
-        description: String,
+        fullDescription: String,
     ) {
         Log.i(contextTAG, "Entered in popUpDetails function")
         val mBuilder = AlertDialog.Builder(requireActivity())
-        val view1: View = layoutInflater.inflate(R.layout.delete_confirmation_dialog, null)
+        val view1: View = layoutInflater.inflate(R.layout.popup_details, null)
         val userNameD = view1.findViewById<TextView>(R.id.user_confirm_id)
         val dateD = view1.findViewById<TextView>(R.id.date_confirm_id)
         val amountD = view1.findViewById<TextView>(R.id.amount_confirm_id)
@@ -322,8 +323,8 @@ class GetAllDataFragment : Fragment() {
         userNameD.text = getString(R.string.data_id_dialog_DD, userName)
         dateD.text = getString(R.string.date_dialog_DD, date)
         amountD.text = getString(R.string.amount_dialog_DD, amount)
-        descriptionD.text = getString(R.string.description_dialog_DD, description)
-        Log.i(contextTAG, "triggered $id $date $amount $description")
+        descriptionD.text = getString(R.string.description_dialog_DD, fullDescription)
+        Log.i(contextTAG, "triggered $id $date $amount $fullDescription")
         dialog1.setCanceledOnTouchOutside(true)
         dialog1.show()
     }

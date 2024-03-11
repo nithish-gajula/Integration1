@@ -78,7 +78,7 @@ class RoomActivity : AppCompatActivity() {
 
                 R.id.myData -> {
                     replaceFragment(GetDataFragment())
-                    toolbar.title = "  Your Expenses"
+                    toolbar.title = "  My Expenses"
                 }
 
                 R.id.roomData -> {

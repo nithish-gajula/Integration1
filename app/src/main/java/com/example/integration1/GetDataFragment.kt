@@ -68,8 +68,9 @@ class GetDataFragment : Fragment() {
                 val date = selectedItem.date
                 val amount = selectedItem.amount
                 val id = selectedItem.id
+                val fullDescription = selectedItem.fullDescription
 
-                delete(id, userName, date, amount, description, roomActivity)
+                delete(id, userName, date, amount, fullDescription, roomActivity)
             }
         }
         return v
@@ -195,6 +196,7 @@ class GetDataFragment : Fragment() {
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
                         put("position6", jo.getString("foodId"))
+                        put("position7", jo.getString("description"))
                     }
                     totalAmount += jo.getString("amount").toDouble()
                     monthData.put(newData)
@@ -209,6 +211,7 @@ class GetDataFragment : Fragment() {
                         put("position4", "₹ ${jo.getString("amount")}")
                         put("position5", jo.getString("dataId"))
                         put("position6", jo.getString("foodId"))
+                        put("position7", jo.getString("description"))
                     }
                     newDataArray.put(newData)
 
@@ -279,7 +282,8 @@ class GetDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getString("position6").toInt()-1]
+                            avatars[itemData.getString("position6").toInt()-1],
+                            itemData.getString("position7")
                         )
                     )
                 }
@@ -293,10 +297,6 @@ class GetDataFragment : Fragment() {
 
         roomActivity.alertDialog.dismiss()
         totalAmountTV.text = totalAmount.toString()
-    }
-
-    private fun generateRandomNumber(): Int {
-        return Random.nextInt(0, 3)
     }
 
     private fun limitDescription(description: String): String {
@@ -323,7 +323,7 @@ class GetDataFragment : Fragment() {
         userName: String,
         date: String,
         amount: String,
-        description: String,
+        fullDescription: String,
         roomActivity: RoomActivity
     ) {
         Log.i(contextTAG, "Entered in delete function")
@@ -342,8 +342,8 @@ class GetDataFragment : Fragment() {
         userNameD.text = getString(R.string.data_id_dialog_DD, userName)
         dateD.text = getString(R.string.date_dialog_DD, date)
         amountD.text = getString(R.string.amount_dialog_DD, amount)
-        descriptionD.text = getString(R.string.description_dialog_DD, description)
-        Log.i(contextTAG, "triggered $id $date $amount $description")
+        descriptionD.text = getString(R.string.description_dialog_DD, fullDescription)
+        Log.i(contextTAG, "triggered $id $date $amount $fullDescription")
         dialog1.setCanceledOnTouchOutside(false)
         dialog1.show()
 
