@@ -6,6 +6,8 @@ import java.util.Locale
 
 object GlobalFunctions {
 
+
+
     fun convertDateFormat(dateString: String): String {
         // Parsing the input date string
         val dateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())

@@ -82,12 +82,12 @@ class UserDataViewModel : ViewModel() {
         if (!ActivityUtils.directory.exists()) {
             isDirExist = false
         }
-        if (!ActivityUtils.file.exists()) {
+        if (!ActivityUtils.userDataFile.exists()) {
             isFileExist = false
         }
 
         try {
-            val content = ActivityUtils.file.readText()
+            val content = ActivityUtils.userDataFile.readText()
             val userData = JSONObject(content)
 
 

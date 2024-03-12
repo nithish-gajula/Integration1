@@ -1,9 +1,12 @@
 package com.example.integration1
 
+import ActivityUtils
 import CustomAdapter
 import Item
 import Section
+import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -29,6 +32,10 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -40,8 +47,16 @@ class GetDataFragment : Fragment() {
     private var totalAmount: Double = 0.0
     private lateinit var warningTV: TextView
 
+    val userExpensesFileName = "user_expenses.json"
+    val directoryName = "RoomBudget"
+    val directory = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+        directoryName
+    )
+    val userExpensesFile = File(directory, userExpensesFileName)
+
     private val userDataViewModel: UserDataViewModel by activityViewModels()
-    private val groupedItemsJson = JSONObject()
+    private var groupedItemsJson = JSONObject()
 
     private val contextTAG: String = "GetDataFragment"
 
@@ -56,6 +71,7 @@ class GetDataFragment : Fragment() {
         warningTV = v.findViewById(R.id.get_data_warning_id)
         val roomActivity = activity as RoomActivity
         getItems(roomActivity)
+        //loadUserExpensesFromStorage(roomActivity)
 
         // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
@@ -89,6 +105,7 @@ class GetDataFragment : Fragment() {
             { response ->
                 Log.i(contextTAG, "response = $response")
                 parseItems(response, roomActivity)
+                FileWriter(userExpensesFile).use { it.write(response) }
             }
         ) { error ->
             Log.i(contextTAG, "error = $error")
@@ -99,6 +116,24 @@ class GetDataFragment : Fragment() {
         stringRequest.setRetryPolicy(policy)
         val queue = Volley.newRequestQueue(activity)
         queue.add(stringRequest)
+    }
+
+    private fun loadUserExpensesFromStorage(roomActivity: RoomActivity) {
+        Log.i(contextTAG, "Entered in loadUserExpensesFromStorage Function")
+        try {
+
+            if (!userExpensesFile.exists()) {
+                userExpensesFile.createNewFile()
+                getItems(roomActivity)
+            }
+            //userExpensesFile.createNewFile()
+            val content = userExpensesFile.readText()
+            //groupedItemsJson = JSONObject(content)
+            parseItems(content, roomActivity)
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
     private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {

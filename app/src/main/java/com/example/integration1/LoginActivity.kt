@@ -237,14 +237,14 @@ class LoginActivity : AppCompatActivity() {
             Log.i(contextTAG, "Directory not exists, Creating Directory")
             ActivityUtils.directory.mkdirs()
         }
-        if (!ActivityUtils.file.exists()) {
+        if (!ActivityUtils.userDataFile.exists()) {
             Log.i(contextTAG, "File not exists, Creating File")
-            ActivityUtils.file.createNewFile()
+            ActivityUtils.userDataFile.createNewFile()
         }
 
         try {
             userData.put("loginTime", DateFormat.getDateTimeInstance().format(Date()).toString())
-            FileWriter(ActivityUtils.file).use { it.write(userData.toString()) }
+            FileWriter(ActivityUtils.userDataFile).use { it.write(userData.toString()) }
             Log.i(contextTAG, "userData :  $userData")
 
         } catch (e: IOException) {

@@ -489,13 +489,13 @@ class MainActivity : AppCompatActivity() {
         Log.i(contextTAG, "Entered storeRoomIdAndAdminStatus Function")
         try {
 
-            val content = ActivityUtils.file.readText()
+            val content = ActivityUtils.userDataFile.readText()
             val userData = JSONObject(content)
 
             userData.put("roomId", roomID)
             userData.put("adminStatus", adminStatus)
 
-            FileWriter(ActivityUtils.file).use { fileWriter ->
+            FileWriter(ActivityUtils.userDataFile).use { fileWriter ->
                 fileWriter.write(userData.toString())
                 fileWriter.flush()
             }
@@ -509,12 +509,12 @@ class MainActivity : AppCompatActivity() {
         Log.i(contextTAG, "Entered storeRoomId Function")
         try {
 
-            val content = ActivityUtils.file.readText()
+            val content = ActivityUtils.userDataFile.readText()
             val userData = JSONObject(content)
 
             userData.put("roomId", roomID)
 
-            FileWriter(ActivityUtils.file).use { fileWriter ->
+            FileWriter(ActivityUtils.userDataFile).use { fileWriter ->
                 fileWriter.write(userData.toString())
                 fileWriter.flush()
             }

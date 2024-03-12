@@ -13,13 +13,17 @@ import java.io.File
 
 object ActivityUtils {
 
-    val fileName = "userdata.json"
+    val userDataFileName = "userdata.json"
+    val userExpensesFileName = "userexpenses.json"
+    val roomExpensesFileName = "roomexpenses.json"
     val directoryName = "RoomBudget"
     val directory = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
         directoryName
     )
-    val file = File(directory, fileName)
+    val userDataFile = File(directory, userDataFileName)
+    val userExpensesFile = File(directory, userExpensesFileName)
+    val roomExpensesFile = File(directory, roomExpensesFileName)
 
     val avatars = intArrayOf(
         R.mipmap.avatar1,
@@ -39,7 +43,7 @@ object ActivityUtils {
     fun navigateToActivity(activity: Activity, intent: Intent) {
         if(intent.component?.className == LoginActivity::class.java.name){
             Log.i("Delete : ", "Entered in LoginActivity Navigation")
-            file.delete()
+            userDataFile.delete()
         }
         activity.startActivity(intent)
     }
