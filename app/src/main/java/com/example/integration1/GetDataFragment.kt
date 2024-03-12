@@ -32,14 +32,13 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 class GetDataFragment : Fragment() {
-    private lateinit var adapter: ListAdapter
+    private var adapter: ListAdapter? = null
     private lateinit var listView: ListView
     private lateinit var totalAmountTV: TextView
     private var totalAmount: Double = 0.0
-    private lateinit var warningTV : TextView
+    private lateinit var warningTV: TextView
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
@@ -64,7 +63,6 @@ class GetDataFragment : Fragment() {
             if (selectedItem is Item) {
                 Log.d(contextTAG, "Entered in listView onclick if condition")
                 val userName = selectedItem.userName
-                val description = selectedItem.description
                 val date = selectedItem.date
                 val amount = selectedItem.amount
                 val id = selectedItem.id
@@ -102,75 +100,6 @@ class GetDataFragment : Fragment() {
         val queue = Volley.newRequestQueue(activity)
         queue.add(stringRequest)
     }
-
-    /*
-
-
-    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
-        val list = ArrayList<HashMap<String, String?>>()
-        val monthItemsMap = HashMap<String, ArrayList<HashMap<String, String?>>>()
-        val imageNames = arrayOf(R.mipmap.meat, R.mipmap.shopping_cart, R.mipmap.rice)
-        try {
-            val jsonObj = JSONObject(jsonResponse)
-            val jsonArray = jsonObj.getJSONArray("items")
-            var amountTemp = 0
-            for (i in 0 until jsonArray.length()) {
-                val jo = jsonArray.getJSONObject(i)
-                val dataId = jo.getString("dataId")
-                var date = jo.getString("date")
-                date = GlobalFunctions.convertDateFormat(date)
-                val amount = jo.getString("amount")
-                var description = jo.getString("description")
-
-                if (description.length >= 20) {
-                    description = description.substring(0, 20) + ".."
-                }
-
-                amountTemp += amount.toInt()
-                val item = HashMap<String, String?>()
-                item["position1"] = userDataViewModel.userName
-                item["position2"] = description
-                item["position3"] = date
-                item["position4"] = "₹ $amount"
-                item["position5"] = dataId
-                item["position6"] = dataId
-                list.add(item)
-            }
-            totalAmount.text = getString(R.string.total_amount_GD, amountTemp)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        adapter = SimpleAdapter(
-            activity,
-            list,
-            //R.layout.list_item_get_data,
-            R.layout.common_list_item,
-            arrayOf(
-                "position1",
-                "position2",
-                "position3",
-                "position4",
-                "position5"
-            ),
-            intArrayOf(
-                //R.id.lv_2_date_id,
-                //R.id.lv_2_amount_id,
-                //R.id.lv_2_description_id
-                R.id.user_name_tv_id,
-                R.id.description_tv_id,
-                R.id.date_tv_id,
-                R.id.amount_tv_id
-                //R.id.profile_image
-            )
-        )
-        listView.adapter = adapter
-        roomActivity.alertDialog.dismiss()
-    }
-
-
-
-     */
-
 
     private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
         try {
@@ -282,7 +211,7 @@ class GetDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getString("position6").toInt()-1],
+                            avatars[itemData.getString("position6").toInt() - 1],
                             itemData.getString("position7")
                         )
                     )
@@ -364,6 +293,7 @@ class GetDataFragment : Fragment() {
                         anm1.setAnimation(R.raw.delete_file)
                         anm1.playAnimation()
                         Handler(Looper.getMainLooper()).postDelayed({
+                            adapter = null
                             dialog1.dismiss()
                             getItems(roomActivity)
                         }, 2000)
@@ -377,7 +307,6 @@ class GetDataFragment : Fragment() {
                     override fun getParams(): Map<String, String> {
                         val param: MutableMap<String, String> =
                             HashMap()
-
                         //here we pass params
                         param["action"] = "deleteItem"
                         param["userId"] = userDataViewModel.userId

@@ -25,7 +25,6 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 class GetAllDataFragment : Fragment() {
 
@@ -33,7 +32,7 @@ class GetAllDataFragment : Fragment() {
     private lateinit var listView: ListView
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
-    private lateinit var warningTV : TextView
+    private lateinit var warningTV: TextView
 
     private val contextTAG: String = "GetAllDataFragment"
 
@@ -63,7 +62,6 @@ class GetAllDataFragment : Fragment() {
             if (selectedItem is Item) {
                 Log.d(contextTAG, "Entered in listView onclick if condition")
                 val userName = selectedItem.userName
-                val description = selectedItem.description
                 val date = selectedItem.date
                 val amount = selectedItem.amount
                 val id = selectedItem.id
@@ -95,62 +93,6 @@ class GetAllDataFragment : Fragment() {
         val queue = Volley.newRequestQueue(activity)
         queue.add(stringRequest)
     }
-
-
-    /*
-    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
-        val list = ArrayList<HashMap<String, String?>>()
-        try {
-            val jsonObj = JSONObject(jsonResponse)
-            val jsonArray = jsonObj.getJSONArray("items")
-            for (i in 0 until jsonArray.length()) {
-                val jo1 = jsonArray.getJSONObject(i) // each user
-                val jo2 = jo1.getJSONArray("records")
-
-                for (j in 0 until jo2.length()) {
-                    val jo = jo2.getJSONObject(j)
-
-                    val dataID = jo.getString("dataId")
-                    val name = jo.getString("userName")
-                    var date = jo.getString("date")
-                    date = GlobalFunctions.convertDateFormat(date)
-                    val amount = jo.getString("amount")
-                    var description = jo.getString("description")
-
-                    if(description.length >= 20){
-                        description = description.substring(0, 20) + ".."
-                    }
-
-                    val item = HashMap<String, String?>()
-                    item["position1"] = name
-                    item["position2"] = description
-                    item["position3"] = date
-                    item["position4"] = " ₹ $amount"
-                    item["position5"] = dataID
-                    list.add(item)
-                }
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        adapter = SimpleAdapter(
-            activity,
-            list,
-            R.layout.common_list_item,
-            arrayOf("position1", "position2", "position3", "position4", "position5"),
-            intArrayOf(
-                R.id.user_name_tv_id,
-                R.id.description_tv_id,
-                R.id.date_tv_id,
-                R.id.amount_tv_id
-            )
-        )
-        listView.adapter = adapter
-        roomActivity.alertDialog.dismiss()
-    }
-
-     */
-
 
     private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
         Log.d(contextTAG, "Entered in parseItems function")
@@ -266,7 +208,7 @@ class GetAllDataFragment : Fragment() {
                             itemData.getString("position3"),
                             itemData.getString("position4"),
                             itemData.getString("position5"),
-                            avatars[itemData.getInt("position6")-1],
+                            avatars[itemData.getInt("position6") - 1],
                             itemData.getString("position7")
 
 
