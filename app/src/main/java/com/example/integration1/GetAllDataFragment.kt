@@ -33,6 +33,7 @@ class GetAllDataFragment : Fragment() {
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private val groupedItemsJson = JSONObject()
     private lateinit var warningTV: TextView
+    private lateinit var roomActivity: RoomActivity
 
     private val contextTAG: String = "GetAllDataFragment"
 
@@ -51,10 +52,10 @@ class GetAllDataFragment : Fragment() {
     ): View? {
         val v = inflater.inflate(R.layout.fragment_get_all_data, container, false)
         listView = v.findViewById(R.id.lv_items2)
-        val roomActivity = activity as RoomActivity
+        roomActivity = activity as RoomActivity
         warningTV = v.findViewById(R.id.get_all_data_warning_id)
 
-        getItems(roomActivity)
+        getItems()
 
         // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
@@ -74,7 +75,7 @@ class GetAllDataFragment : Fragment() {
         return v
     }
 
-    private fun getItems(roomActivity: RoomActivity) {
+    private fun getItems() {
         Log.i(contextTAG, "Entered in getItems Function")
         val roomId = userDataViewModel.roomId
         val param = "?action=getTotal&roomId=$roomId"
@@ -84,7 +85,7 @@ class GetAllDataFragment : Fragment() {
         roomActivity.alertDialog.show()
         val stringRequest = StringRequest(
             Request.Method.GET, url + param,
-            { response -> parseItems(response, roomActivity) }
+            { response -> parseItems(response) }
         ) { }
 
         val policy: RetryPolicy =
@@ -94,7 +95,7 @@ class GetAllDataFragment : Fragment() {
         queue.add(stringRequest)
     }
 
-    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
+    private fun parseItems(jsonResponse: String) {
         Log.d(contextTAG, "Entered in parseItems function")
         Log.d(contextTAG, "jsonResponse :  $jsonResponse")
         try {
@@ -163,7 +164,7 @@ class GetAllDataFragment : Fragment() {
             val sortedDescending = dateList.sortedDescending()
             val sortedMonths = sortedDescending.map { dateFormat.format(it) }
 
-            categorizeItems(sortedMonths, roomActivity)
+            categorizeItems(sortedMonths)
         } catch (e: JSONException) {
             warningTV.visibility = View.VISIBLE
             warningTV.text = jsonResponse
@@ -172,7 +173,7 @@ class GetAllDataFragment : Fragment() {
         }
     }
 
-    private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
+    private fun categorizeItems(months: List<String>) {
         val dataList = mutableListOf<Any>()
         val avatars = intArrayOf(
             R.mipmap.avatar1,

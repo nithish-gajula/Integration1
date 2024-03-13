@@ -1,10 +1,9 @@
 package com.example.integration1
 
-import ActivityUtils
 import CustomAdapter
 import Item
+import LOGGING
 import Section
-import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -35,7 +34,6 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -46,17 +44,19 @@ class GetDataFragment : Fragment() {
     private lateinit var totalAmountTV: TextView
     private var totalAmount: Double = 0.0
     private lateinit var warningTV: TextView
+    private lateinit var roomActivity: RoomActivity
 
-    val userExpensesFileName = "user_expenses.json"
-    val directoryName = "RoomBudget"
-    val directory = File(
+    private val userExpensesFileName = "user_expenses.json"
+    private val directoryName = "RoomBudget"
+    private val directory = File(
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
         directoryName
     )
-    val userExpensesFile = File(directory, userExpensesFileName)
+    private val userExpensesFile = File(directory, userExpensesFileName)
 
     private val userDataViewModel: UserDataViewModel by activityViewModels()
     private var groupedItemsJson = JSONObject()
+
 
     private val contextTAG: String = "GetDataFragment"
 
@@ -69,28 +69,36 @@ class GetDataFragment : Fragment() {
         listView = v.findViewById(R.id.lv_items)
         totalAmountTV = v.findViewById(R.id.total_Amount_id)
         warningTV = v.findViewById(R.id.get_data_warning_id)
-        val roomActivity = activity as RoomActivity
-        getItems(roomActivity)
-        //loadUserExpensesFromStorage(roomActivity)
+        roomActivity = activity as RoomActivity
 
-        // Set item click listener
+        if (GlobalAccess.isUserAddedNewData) {
+            getItems()
+        } else {
+            loadUserExpensesFromStorage()
+        }
+
+//        // Set item click listener
         listView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position)
             if (selectedItem is Item) {
-                Log.d(contextTAG, "Entered in listView onclick if condition")
+                //Log.d(contextTAG, "Entered in listView onclick if condition")
+                LOGGING.INFO(contextTAG, "Entered in listView onclick if condition")
                 val userName = selectedItem.userName
                 val date = selectedItem.date
                 val amount = selectedItem.amount
                 val id = selectedItem.id
                 val fullDescription = selectedItem.fullDescription
 
-                delete(id, userName, date, amount, fullDescription, roomActivity)
+                delete(id, userName, date, amount, fullDescription)
             }
         }
+
         return v
     }
 
-    private fun getItems(roomActivity: RoomActivity) {
+    private fun getItems() {
+
+        Log.i(contextTAG, "Entered in getItems Function")
 
         val userId = userDataViewModel.userId
         val roomId = userDataViewModel.roomId
@@ -104,8 +112,8 @@ class GetDataFragment : Fragment() {
             Request.Method.GET, url + param,
             { response ->
                 Log.i(contextTAG, "response = $response")
-                parseItems(response, roomActivity)
                 FileWriter(userExpensesFile).use { it.write(response) }
+                loadUserExpensesFromStorage()
             }
         ) { error ->
             Log.i(contextTAG, "error = $error")
@@ -118,25 +126,28 @@ class GetDataFragment : Fragment() {
         queue.add(stringRequest)
     }
 
-    private fun loadUserExpensesFromStorage(roomActivity: RoomActivity) {
-        Log.i(contextTAG, "Entered in loadUserExpensesFromStorage Function")
+    private fun loadUserExpensesFromStorage() {
+        Log.i(contextTAG, "Entered in loadUserExpensesFromStorage Function ")
         try {
 
             if (!userExpensesFile.exists()) {
+                Log.i(contextTAG, "userExpensesFile Not Found, Creating File")
                 userExpensesFile.createNewFile()
-                getItems(roomActivity)
+                getItems()
+            } else {
+                Log.i(contextTAG, "userExpensesFile Found, Reading the File")
+                val content = userExpensesFile.readText()
+                //groupedItemsJson = JSONObject(content)
+                parseItems(content)
             }
-            //userExpensesFile.createNewFile()
-            val content = userExpensesFile.readText()
-            //groupedItemsJson = JSONObject(content)
-            parseItems(content, roomActivity)
 
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
-    private fun parseItems(jsonResponse: String, roomActivity: RoomActivity) {
+    private fun parseItems(jsonResponse: String) {
+        Log.i(contextTAG, "Entered in parseItems Function")
         try {
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
@@ -195,7 +206,7 @@ class GetDataFragment : Fragment() {
             val sortedDescending = dateList.sortedDescending()
             val sortedMonths = sortedDescending.map { dateFormat.format(it) }
 
-            categorizeItems(sortedMonths, roomActivity)
+            categorizeItems(sortedMonths)
         } catch (e: JSONException) {
             warningTV.visibility = View.VISIBLE
             warningTV.text = jsonResponse
@@ -204,7 +215,8 @@ class GetDataFragment : Fragment() {
         }
     }
 
-    private fun categorizeItems(months: List<String>, roomActivity: RoomActivity) {
+    private fun categorizeItems(months: List<String>) {
+        Log.i(contextTAG, "Entered in categorizeItems Function")
         val dataList = mutableListOf<Any>()
         val avatars = intArrayOf(
             R.drawable.food_1,
@@ -287,8 +299,7 @@ class GetDataFragment : Fragment() {
         userName: String,
         date: String,
         amount: String,
-        fullDescription: String,
-        roomActivity: RoomActivity
+        fullDescription: String
     ) {
         Log.i(contextTAG, "Entered in delete function")
         val mBuilder = AlertDialog.Builder(requireActivity())
@@ -298,7 +309,7 @@ class GetDataFragment : Fragment() {
         val amountD = view1.findViewById<TextView>(R.id.amount_confirm_id)
         val descriptionD = view1.findViewById<TextView>(R.id.description_confirm_id)
         val cancel = view1.findViewById<Button>(R.id.cancel_confirm_id)
-        val upload = view1.findViewById<Button>(R.id.confirm_confirm_id)
+        val deleteBTN = view1.findViewById<Button>(R.id.confirm_confirm_id)
         val ll1 = view1.findViewById<LinearLayout>(R.id.ll1)
         val anm1 = view1.findViewById<LottieAnimationView>(R.id.lottie_animation_1)
         mBuilder.setView(view1)
@@ -311,7 +322,7 @@ class GetDataFragment : Fragment() {
         dialog1.setCanceledOnTouchOutside(false)
         dialog1.show()
 
-        upload.setOnClickListener {
+        deleteBTN.setOnClickListener {
             ll1.visibility = View.GONE
             anm1.visibility = View.VISIBLE
             anm1.setAnimation(R.raw.please_wait)
@@ -330,7 +341,7 @@ class GetDataFragment : Fragment() {
                         Handler(Looper.getMainLooper()).postDelayed({
                             adapter = null
                             dialog1.dismiss()
-                            getItems(roomActivity)
+                            getItems()
                         }, 2000)
                         Toast.makeText(activity, response, Toast.LENGTH_SHORT).show()
                     },

@@ -4,8 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-object GlobalFunctions {
+object GlobalAccess {
 
+    var isUserAddedNewData: Boolean = false
 
 
     fun convertDateFormat(dateString: String): String {
@@ -17,8 +18,5 @@ object GlobalFunctions {
         val outputDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
         return outputDateFormat.format(date)
     }
-
-
-
 
 }

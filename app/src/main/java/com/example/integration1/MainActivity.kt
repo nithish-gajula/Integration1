@@ -5,13 +5,10 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -31,7 +28,6 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.util.Calendar
@@ -100,6 +96,13 @@ class MainActivity : AppCompatActivity() {
             createRoomFunction()
         }
 
+        if (!ActivityUtils.reportedLogsFile.exists()) {
+            ActivityUtils.reportedLogsFile.createNewFile()
+        }
+        if (!ActivityUtils.reportedReadmeLogsFile.exists()) {
+            ActivityUtils.reportedReadmeLogsFile.createNewFile()
+        }
+
         if (!userDataViewModel.isDirExist || !userDataViewModel.isFileExist || userDataViewModel.navigateToLoginActivity) {
             Log.i(contextTAG, "Checking userDataViewModel - navigating To LoginActivity ")
             ActivityUtils.navigateToActivity(this, Intent(this, LoginActivity::class.java))
@@ -128,25 +131,36 @@ class MainActivity : AppCompatActivity() {
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.menu_profile -> {
-                    ActivityUtils.navigateToActivity(this, Intent(this, EditDetailsActivity::class.java))
+                    ActivityUtils.navigateToActivity(
+                        this,
+                        Intent(this, EditDetailsActivity::class.java)
+                    )
                     true
                 }
+
                 R.id.menu_relaunch -> {
                     ActivityUtils.relaunch(this)
                     true
                 }
+
                 R.id.menu_contact_us -> {
-                    ActivityUtils.navigateToActivity(this, Intent(this, ContactUsActivity::class.java))
+                    ActivityUtils.navigateToActivity(
+                        this,
+                        Intent(this, ContactUsActivity::class.java)
+                    )
                     true
                 }
+
                 R.id.menu_about -> {
                     ActivityUtils.showAboutDialog(this)
                     true
                 }
+
                 R.id.menu_logout -> {
                     ActivityUtils.navigateToActivity(this, Intent(this, LoginActivity::class.java))
                     true
                 }
+
                 else -> false
             }
         }

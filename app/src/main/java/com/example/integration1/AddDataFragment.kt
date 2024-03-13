@@ -1,5 +1,6 @@
 package com.example.integration1
 
+import LOGGING
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.os.Handler
@@ -42,9 +43,9 @@ class AddDataFragment : Fragment() {
     private lateinit var viewPager2: ViewPager2
     private lateinit var imageList: ArrayList<Int>
     private lateinit var adapter: ImageAdapter
-    private var foodId : Int = 0
+    private var foodId: Int = 0
 
-    private val contextTAG : String = "AddDataFragment"
+    private val contextTAG: String = "AddDataFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -138,7 +139,7 @@ class AddDataFragment : Fragment() {
 
         setupTransformer()
 
-        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 foodId = position + 1
@@ -154,7 +155,7 @@ class AddDataFragment : Fragment() {
     private fun setupTransformer() {
         val transformer = CompositePageTransformer()
         transformer.addTransformer(MarginPageTransformer(40))
-        transformer.addTransformer{ page, position ->
+        transformer.addTransformer { page, position ->
             val r = 1 - abs(position)
             page.scaleY = 0.85f + r * 0.14f
         }
@@ -210,11 +211,14 @@ class AddDataFragment : Fragment() {
                             response,
                             Toast.LENGTH_SHORT
                         ).show()
+                        //FileWriter(ActivityUtils.reportedLogsFile).use { it.write(GlobalAccess.createLogReport(contextTAG,response,"D")) }
+                        LOGGING.INFO(contextTAG, response)
                         Handler(Looper.getMainLooper()).postDelayed({
                             dialog1.dismiss()
                             amount.setText("")
                             description.setText("")
                             date.setText("")
+                            GlobalAccess.isUserAddedNewData = true
                         }, 2000)
                     },
                     Response.ErrorListener {
