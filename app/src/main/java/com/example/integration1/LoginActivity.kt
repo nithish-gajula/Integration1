@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun loginFunction() {
-        Log.d(contextTAG, "Entered in loginFunction")
+        LOGGING.DEBUG(contextTAG, "Entered in loginFunction")
         val email = emailET.text.trim().toString()
         val password = passwordET.text.trim().toString()
 
@@ -124,19 +124,19 @@ class LoginActivity : AppCompatActivity() {
                 LOGGING.INFO(contextTAG, "Got response = $response")
                 extractJsonData(response)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(contextTAG, "Response Handler started ")
+                    LOGGING.DEBUG(contextTAG, "Response Handler started ")
                     alertDialog.dismiss()
-                    Log.d(contextTAG, "Response Handler End ")
+                    LOGGING.DEBUG(contextTAG, "Response Handler End ")
                 }, 2000)
             },
             { error ->
-                Log.d(contextTAG, "Got Error $error ")
+                LOGGING.DEBUG(contextTAG, "Got Error $error ")
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(contextTAG, "Error handler started ")
+                    LOGGING.DEBUG(contextTAG, "Error handler started ")
                     alertDialog.dismiss()
-                    Log.d(contextTAG, "Error handler End ")
+                    LOGGING.DEBUG(contextTAG, "Error handler End ")
                 }, 2000)
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = error.toString()
@@ -146,19 +146,19 @@ class LoginActivity : AppCompatActivity() {
         val policy = DefaultRetryPolicy(socketTimeOut, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         stringRequest.retryPolicy = policy
         requestQueue.add(stringRequest)
-        Log.d(contextTAG, "Existing the loginFunction")
+        LOGGING.DEBUG(contextTAG, "Existing the loginFunction")
     }
 
 
     private fun extractJsonData(jsonResponse: String) {
-        Log.d(contextTAG, "Entered in extractJsonData Function")
+        LOGGING.DEBUG(contextTAG, "Entered in extractJsonData Function")
         val emailStatus: String
         val passwordStatus: String
         val loginStatus: String
         val roomId: String
 
         try {
-            Log.d(contextTAG, "Entered in try block - extractJsonData Function")
+            LOGGING.DEBUG(contextTAG, "Entered in try block - extractJsonData Function")
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
 
@@ -174,19 +174,19 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show()
                         animationView.setAnimation(R.raw.done)
                         animationView.playAnimation()
-                        Log.d(contextTAG, "loginStatus TRUE")
+                        LOGGING.DEBUG(contextTAG, "loginStatus TRUE")
                         createAndWriteToFile(jsonItem)
                         Handler(Looper.getMainLooper()).postDelayed({
-                            Log.d(contextTAG, "roomId = $roomId, type = ${roomId.javaClass}")
+                            LOGGING.DEBUG(contextTAG, "roomId = $roomId, type = ${roomId.javaClass}")
 
                             if (roomId == "0" || roomId.isEmpty()) {
-                                Log.d(contextTAG, "Entered in if condition - roomId is not good")
+                                LOGGING.DEBUG(contextTAG, "Entered in if condition - roomId is not good")
                                 ActivityUtils.navigateToActivity(
                                     this,
                                     Intent(this, MainActivity::class.java)
                                 )
                             } else {
-                                Log.d(contextTAG, "Entered in else condition - roomId is good")
+                                LOGGING.DEBUG(contextTAG, "Entered in else condition - roomId is good")
                                 ActivityUtils.navigateToActivity(
                                     this,
                                     Intent(this, RoomActivity::class.java)
@@ -197,7 +197,7 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     emailStatus.toBoolean() && !passwordStatus.toBoolean() -> {
-                        Log.d(
+                        LOGGING.DEBUG(
                             contextTAG,
                             "login failed for ${getString(R.string.incorrect_password)}"
                         )
@@ -208,7 +208,7 @@ class LoginActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        Log.d(
+                        LOGGING.DEBUG(
                             contextTAG,
                             "login failed for ${getString(R.string.no_user_data_found)}"
                         )
@@ -219,7 +219,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                Log.d(contextTAG, "login failed for ${getString(R.string.no_data_found)}")
+                LOGGING.DEBUG(contextTAG, "login failed for ${getString(R.string.no_data_found)}")
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 resultTV.visibility = View.VISIBLE

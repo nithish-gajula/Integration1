@@ -143,7 +143,7 @@ class AddDataFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 foodId = position + 1
-                Log.d(contextTAG, "FoodID : $foodId")
+                LOGGING.DEBUG(contextTAG, "FoodID : $foodId")
             }
         })
 

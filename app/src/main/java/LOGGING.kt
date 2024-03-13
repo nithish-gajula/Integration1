@@ -6,23 +6,33 @@ import java.time.format.DateTimeFormatter
 object LOGGING {
 
     fun INFO(context: String, msg: String) {
+        val stackTrace = Thread.currentThread().stackTrace
+        if (stackTrace.size >= 3) {
+            val methodName = stackTrace[3].methodName
+            val lineNumber = stackTrace[3].lineNumber
+            val fileName = stackTrace[3].fileName
+            val logContent = "\n[ ${getCurrentDateTime()} ] [INFO] [$fileName] [$methodName] [$lineNumber] \n$msg \n--------------------------------------------"
+            val markdownContent = "\n[ *${getCurrentDateTime()}* ] [<font color='blue'>**INFO**</font>] [$fileName] [$methodName] [$lineNumber] \n" +
+                    ">$msg \n *** \n"
+            reportLog(logContent, markdownContent)
+        }
         Log.i(context, msg)
-        val log =
-            "\n${getCurrentDateTime()}   $context   INFO \n $msg \n --------------------------------------------"
-        val markdownContent = "\n*${getCurrentDateTime()}*\t**$context**\t[INFO](#) \n" +
-                "> $msg " +
-                "\n\n\n"
-        reportLog(log, markdownContent)
+
     }
 
     fun DEBUG(context: String, msg: String) {
+
+        val stackTrace = Thread.currentThread().stackTrace
+        if (stackTrace.size >= 3) {
+            val methodName = stackTrace[3].methodName
+            val lineNumber = stackTrace[3].lineNumber
+            val fileName = stackTrace[3].fileName
+            val logContent = "\n[ ${getCurrentDateTime()} ] [DEBUG] [$fileName] [$methodName] [$lineNumber] \n$msg \n--------------------------------------------"
+            val markdownContent = "\n[ *${getCurrentDateTime()}* ] [<font color='orange'>**DEBUG**</font>] [$fileName] [$methodName] [$lineNumber] \n" +
+                    ">$msg \n *** \n"
+            reportLog(logContent, markdownContent)
+        }
         Log.d(context, msg)
-        val log =
-            "\n${getCurrentDateTime()}   $context   INFO \n $msg \n --------------------------------------------"
-        val markdownContent = "\n*${getCurrentDateTime()}*\t**$context**\t[DEBUG](#) \n" +
-                "> $msg " +
-                "\n\n\n"
-        reportLog(log, markdownContent)
     }
 
     private fun getCurrentDateTime(): String {
@@ -36,4 +46,5 @@ object LOGGING {
         FileWriter(ActivityUtils.reportedReadmeLogsFile, true).use { it.write(markdown) }
 
     }
+
 }

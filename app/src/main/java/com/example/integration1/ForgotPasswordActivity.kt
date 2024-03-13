@@ -72,7 +72,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
 
     private fun resetPasswordFunction() {
-        Log.d(contextTAG, "Entered in resetPasswordFunction ")
+        LOGGING.DEBUG(contextTAG, "Entered in resetPasswordFunction ")
 
         val email = emailET.text.trim().toString()
         val password = passwordET.text.trim().toString()
@@ -105,22 +105,22 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val stringRequest = object : StringRequest(
             Method.POST, getString(R.string.spreadsheet_url),
             { response ->
-                Log.d(contextTAG, "Got Response $response ")
+                LOGGING.DEBUG(contextTAG, "Got Response $response ")
                 extractResetJsonData(response)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(contextTAG, "Response Handler started ")
+                    LOGGING.DEBUG(contextTAG, "Response Handler started ")
                     alertDialog.dismiss()
-                    Log.d(contextTAG, "Response Handler End ")
+                    LOGGING.DEBUG(contextTAG, "Response Handler End ")
                 }, 2000)
             },
             { error ->
-                Log.d(contextTAG, "Got Error $error ")
+                LOGGING.DEBUG(contextTAG, "Got Error $error ")
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.d(contextTAG, "Error handler started ")
+                    LOGGING.DEBUG(contextTAG, "Error handler started ")
                     alertDialog.dismiss()
-                    Log.d(contextTAG, "Error handler End ")
+                    LOGGING.DEBUG(contextTAG, "Error handler End ")
                 }, 2000)
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = error.toString()
@@ -143,12 +143,12 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     private fun extractResetJsonData(jsonResponse: String) {
-        Log.d(contextTAG, "Entered in  extractResetJsonData")
+        LOGGING.DEBUG(contextTAG, "Entered in  extractResetJsonData")
         val emailStatus: String
         val resetStatus: String
 
         try {
-            Log.d(contextTAG, "Entered in try block")
+            LOGGING.DEBUG(contextTAG, "Entered in try block")
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
 
@@ -156,14 +156,14 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 val jsonItem = jsonArray.getJSONObject(0)
                 emailStatus = jsonItem.getBoolean("email_status").toString()
                 resetStatus = jsonItem.getBoolean("result").toString()
-                Log.d(contextTAG, "emailStatus = $emailStatus")
-                Log.d(contextTAG, "resetStatus = $resetStatus")
+                LOGGING.DEBUG(contextTAG, "emailStatus = $emailStatus")
+                LOGGING.DEBUG(contextTAG, "resetStatus = $resetStatus")
 
                 when {
                     resetStatus.toBoolean() -> {
                         animationView.setAnimation(R.raw.protected_shield)
                         animationView.playAnimation()
-                        Log.d(contextTAG, "ResetStatus TRUE")
+                        LOGGING.DEBUG(contextTAG, "ResetStatus TRUE")
                         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                         Handler(Looper.getMainLooper()).postDelayed({
                             ActivityUtils.navigateToActivity(this, Intent(this, LoginActivity::class.java))
@@ -173,7 +173,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     !emailStatus.toBoolean() -> {
                         animationView.setAnimation(R.raw.error)
                         animationView.playAnimation()
-                        Log.d(contextTAG, "EmailStatus FALSE")
+                        LOGGING.DEBUG(contextTAG, "EmailStatus FALSE")
                         resultTV.visibility = View.VISIBLE
                         resultTV.text = getString(R.string.no_user_data_found)
                     }
@@ -181,7 +181,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     else -> {
                         animationView.setAnimation(R.raw.error)
                         animationView.playAnimation()
-                        Log.d(contextTAG, "Something went wrong")
+                        LOGGING.DEBUG(contextTAG, "Something went wrong")
                         resultTV.visibility = View.VISIBLE
                         resultTV.text = getString(R.string.something_went_wrong)
                     }
@@ -190,7 +190,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             } else {
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
-                Log.d(contextTAG, "No Data Found")
+                LOGGING.DEBUG(contextTAG, "No Data Found")
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = getString(R.string.no_data_found)
             }

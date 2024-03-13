@@ -1,6 +1,7 @@
 package com.example.integration1
 
 import ActivityUtils
+import LOGGING
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
@@ -47,11 +48,7 @@ class UserDataViewModel : ViewModel() {
 
 
     init {
-
-        LOGGING.INFO(contextTAG, "Init Started")
         loadUserData()
-        LOGGING.INFO(contextTAG, "Init Completed")
-
     }
 
     fun getStoragePermissions(activity: Activity) {
@@ -102,15 +99,19 @@ class UserDataViewModel : ViewModel() {
             adminStatus = userData.getString("adminStatus")
             profileId = userData.getString("profileId")
 
-            LOGGING.INFO(contextTAG,"userId :  $userId")
-            LOGGING.INFO(contextTAG,"userName :  $userName")
-            LOGGING.INFO(contextTAG,"age :  $age")
-            LOGGING.INFO(contextTAG,"email :  $email")
-            LOGGING.INFO(contextTAG,"phoneNumber :  $phoneNumber")
-            LOGGING.INFO(contextTAG,"loginTime :  $loginTime")
-            LOGGING.INFO(contextTAG,"roomId :  $roomId")
-            LOGGING.INFO(contextTAG,"adminStatus :  $adminStatus")
-            LOGGING.INFO(contextTAG,"profileId :  $profileId")
+            val info = "userid : $userId \n" +
+                    "userName :  $userName \n" +
+                    "age :  $age \n" +
+                    "email :  $email \n" +
+                    "phoneNumber :  $phoneNumber \n" +
+                    "loginTime :  $loginTime \n" +
+                    "roomId :  $roomId \n" +
+                    "adminStatus :  $adminStatus \n" +
+                    "profileId :  $profileId "
+
+
+
+            LOGGING.INFO(contextTAG,info)
 
             if (roomId.length <= 1) {
                 isRoomLengthLessThanOne = true

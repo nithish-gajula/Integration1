@@ -1,6 +1,7 @@
 package com.example.integration1
 
 import ActivityUtils
+import LOGGING
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
@@ -258,7 +259,7 @@ class RoomActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.i(contextTAG, "onBackPressed clicked")
+                LOGGING.INFO(contextTAG, "onBackPressed clicked")
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
@@ -277,20 +278,20 @@ class RoomActivity : AppCompatActivity() {
 
 
     private fun replaceFragment(fragment: Fragment) {
-        Log.i(contextTAG, "Entered in replaceFragment Function - $fragment")
+        LOGGING.INFO(contextTAG, "Entered in replaceFragment Function - $fragment")
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment).commit()
     }
 
     private fun relaunch() {
-        Log.i(contextTAG, "Entered in relaunch Function")
+        LOGGING.INFO(contextTAG, "Entered in relaunch Function")
         //finish()
         finishAffinity()
         startActivity(intent)
     }
 
     private fun showAboutDialog() {
-        Log.i(contextTAG, "Entered in showAboutDialog Function")
+        LOGGING.INFO(contextTAG, "Entered in showAboutDialog Function")
         val mView: View = layoutInflater.inflate(R.layout.about, null)
         val tv = mView.findViewById<TextView>(R.id.app_version_id)
         val gmailIMG = mView.findViewById<ImageView>(R.id.gmail_img_id)

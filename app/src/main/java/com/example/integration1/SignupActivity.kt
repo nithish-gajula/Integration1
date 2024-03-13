@@ -169,22 +169,22 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun extractSignupJsonData(jsonResponse: String) {
-        Log.d(contextTAG, "Entered in extractSignupJsonData Function")
+        LOGGING.DEBUG(contextTAG, "Entered in extractSignupJsonData Function")
         val emailStatus: String
         val signupStatus: String
 
         try {
-            Log.d(contextTAG, " Entered in try block")
+            LOGGING.DEBUG(contextTAG, " Entered in try block")
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
-            Log.d(contextTAG, "items = $jsonArray")
+            LOGGING.DEBUG(contextTAG, "items = $jsonArray")
 
             if (jsonArray.length() > 0) {
                 val jsonItem = jsonArray.getJSONObject(0)
                 emailStatus = jsonItem.getBoolean("email_status").toString()
                 signupStatus = jsonItem.getBoolean("result").toString()
 
-                Log.d(contextTAG, "email_status = $emailStatus, signupStatus = $signupStatus")
+                LOGGING.DEBUG(contextTAG, "email_status = $emailStatus, signupStatus = $signupStatus")
 
                 when {
                     signupStatus.toBoolean() -> {

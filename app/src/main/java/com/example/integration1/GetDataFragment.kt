@@ -81,7 +81,7 @@ class GetDataFragment : Fragment() {
         listView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position)
             if (selectedItem is Item) {
-                //Log.d(contextTAG, "Entered in listView onclick if condition")
+                //LOGGING.DEBUG(contextTAG, "Entered in listView onclick if condition")
                 LOGGING.INFO(contextTAG, "Entered in listView onclick if condition")
                 val userName = selectedItem.userName
                 val date = selectedItem.date
@@ -111,7 +111,7 @@ class GetDataFragment : Fragment() {
         val stringRequest = StringRequest(
             Request.Method.GET, url + param,
             { response ->
-                LOGGING.INFO(contextTAG, "response = $response")
+                //LOGGING.INFO(contextTAG, "response = $response")
                 FileWriter(userExpensesFile).use { it.write(response) }
                 loadUserExpensesFromStorage()
             }
@@ -250,7 +250,7 @@ class GetDataFragment : Fragment() {
                 val monthData = monthJsonObject.getJSONArray("MonthData")
                 for (j in 0 until monthData.length()) {
                     val itemData = monthData.getJSONObject(j)
-                    Log.d(contextTAG, "itemData :  $itemData")
+                    //LOGGING.DEBUG(contextTAG, "itemData :  $itemData")
                     dataList.add(
                         Item(
                             itemData.getString("position1"),

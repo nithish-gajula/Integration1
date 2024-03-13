@@ -61,7 +61,7 @@ class GetAllDataFragment : Fragment() {
         listView.setOnItemClickListener { parent, _, position, _ ->
             val selectedItem = parent.getItemAtPosition(position)
             if (selectedItem is Item) {
-                Log.d(contextTAG, "Entered in listView onclick if condition")
+                LOGGING.DEBUG(contextTAG, "Entered in listView onclick if condition")
                 val userName = selectedItem.userName
                 val date = selectedItem.date
                 val amount = selectedItem.amount
@@ -96,8 +96,8 @@ class GetAllDataFragment : Fragment() {
     }
 
     private fun parseItems(jsonResponse: String) {
-        Log.d(contextTAG, "Entered in parseItems function")
-        Log.d(contextTAG, "jsonResponse :  $jsonResponse")
+        LOGGING.DEBUG(contextTAG, "Entered in parseItems function")
+        //LOGGING.DEBUG(contextTAG, "jsonResponse :  $jsonResponse")
         try {
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
