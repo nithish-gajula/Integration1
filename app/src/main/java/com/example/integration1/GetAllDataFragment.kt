@@ -76,7 +76,7 @@ class GetAllDataFragment : Fragment() {
     }
 
     private fun getItems() {
-        Log.i(contextTAG, "Entered in getItems Function")
+        LOGGING.INFO(contextTAG, "Entered in getItems Function")
         val roomId = userDataViewModel.roomId
         val param = "?action=getTotal&roomId=$roomId"
         val url = resources.getString(R.string.spreadsheet_url)
@@ -254,7 +254,7 @@ class GetAllDataFragment : Fragment() {
         amount: String,
         fullDescription: String,
     ) {
-        Log.i(contextTAG, "Entered in popUpDetails function")
+        LOGGING.INFO(contextTAG, "Entered in popUpDetails function")
         val mBuilder = AlertDialog.Builder(requireActivity())
         val view1: View = layoutInflater.inflate(R.layout.popup_details, null)
         val userNameD = view1.findViewById<TextView>(R.id.user_confirm_id)
@@ -267,7 +267,7 @@ class GetAllDataFragment : Fragment() {
         dateD.text = getString(R.string.date_dialog_DD, date)
         amountD.text = getString(R.string.amount_dialog_DD, amount)
         descriptionD.text = getString(R.string.description_dialog_DD, fullDescription)
-        Log.i(contextTAG, "triggered $id $date $amount $fullDescription")
+        LOGGING.INFO(contextTAG, "triggered $id $date $amount $fullDescription")
         dialog1.setCanceledOnTouchOutside(true)
         dialog1.show()
     }

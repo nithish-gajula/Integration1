@@ -42,7 +42,7 @@ object ActivityUtils {
 
     fun navigateToActivity(activity: Activity, intent: Intent) {
         if (intent.component?.className == LoginActivity::class.java.name) {
-            Log.i("Delete : ", "Entered in LoginActivity Navigation")
+            LOGGING.INFO("Delete : ", "Entered in LoginActivity Navigation")
             userDataFile.delete()
         }
         activity.startActivity(intent)

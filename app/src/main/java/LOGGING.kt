@@ -15,6 +15,16 @@ object LOGGING {
         reportLog(log, markdownContent)
     }
 
+    fun DEBUG(context: String, msg: String) {
+        Log.d(context, msg)
+        val log =
+            "\n${getCurrentDateTime()}   $context   INFO \n $msg \n --------------------------------------------"
+        val markdownContent = "\n*${getCurrentDateTime()}*\t**$context**\t[DEBUG](#) \n" +
+                "> $msg " +
+                "\n\n\n"
+        reportLog(log, markdownContent)
+    }
+
     private fun getCurrentDateTime(): String {
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss.SSS")

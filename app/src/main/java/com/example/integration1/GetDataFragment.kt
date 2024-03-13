@@ -98,7 +98,7 @@ class GetDataFragment : Fragment() {
 
     private fun getItems() {
 
-        Log.i(contextTAG, "Entered in getItems Function")
+        LOGGING.INFO(contextTAG, "Entered in getItems Function")
 
         val userId = userDataViewModel.userId
         val roomId = userDataViewModel.roomId
@@ -111,12 +111,12 @@ class GetDataFragment : Fragment() {
         val stringRequest = StringRequest(
             Request.Method.GET, url + param,
             { response ->
-                Log.i(contextTAG, "response = $response")
+                LOGGING.INFO(contextTAG, "response = $response")
                 FileWriter(userExpensesFile).use { it.write(response) }
                 loadUserExpensesFromStorage()
             }
         ) { error ->
-            Log.i(contextTAG, "error = $error")
+            LOGGING.INFO(contextTAG, "error = $error")
         }
         val socketTimeOut = 50000
         val policy: RetryPolicy =
@@ -127,15 +127,15 @@ class GetDataFragment : Fragment() {
     }
 
     private fun loadUserExpensesFromStorage() {
-        Log.i(contextTAG, "Entered in loadUserExpensesFromStorage Function ")
+        LOGGING.INFO(contextTAG, "Entered in loadUserExpensesFromStorage Function ")
         try {
 
             if (!userExpensesFile.exists()) {
-                Log.i(contextTAG, "userExpensesFile Not Found, Creating File")
+                LOGGING.INFO(contextTAG, "userExpensesFile Not Found, Creating File")
                 userExpensesFile.createNewFile()
                 getItems()
             } else {
-                Log.i(contextTAG, "userExpensesFile Found, Reading the File")
+                LOGGING.INFO(contextTAG, "userExpensesFile Found, Reading the File")
                 val content = userExpensesFile.readText()
                 //groupedItemsJson = JSONObject(content)
                 parseItems(content)
@@ -147,7 +147,7 @@ class GetDataFragment : Fragment() {
     }
 
     private fun parseItems(jsonResponse: String) {
-        Log.i(contextTAG, "Entered in parseItems Function")
+        LOGGING.INFO(contextTAG, "Entered in parseItems Function")
         try {
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
@@ -216,7 +216,7 @@ class GetDataFragment : Fragment() {
     }
 
     private fun categorizeItems(months: List<String>) {
-        Log.i(contextTAG, "Entered in categorizeItems Function")
+        LOGGING.INFO(contextTAG, "Entered in categorizeItems Function")
         val dataList = mutableListOf<Any>()
         val avatars = intArrayOf(
             R.drawable.food_1,
@@ -301,7 +301,7 @@ class GetDataFragment : Fragment() {
         amount: String,
         fullDescription: String
     ) {
-        Log.i(contextTAG, "Entered in delete function")
+        LOGGING.INFO(contextTAG, "Entered in delete function")
         val mBuilder = AlertDialog.Builder(requireActivity())
         val view1: View = layoutInflater.inflate(R.layout.delete_confirmation_dialog, null)
         val userNameD = view1.findViewById<TextView>(R.id.user_confirm_id)
@@ -318,7 +318,7 @@ class GetDataFragment : Fragment() {
         dateD.text = getString(R.string.date_dialog_DD, date)
         amountD.text = getString(R.string.amount_dialog_DD, amount)
         descriptionD.text = getString(R.string.description_dialog_DD, fullDescription)
-        Log.i(contextTAG, "triggered $id $date $amount $fullDescription")
+        LOGGING.INFO(contextTAG, "triggered $id $date $amount $fullDescription")
         dialog1.setCanceledOnTouchOutside(false)
         dialog1.show()
 
@@ -328,7 +328,7 @@ class GetDataFragment : Fragment() {
             anm1.setAnimation(R.raw.please_wait)
             anm1.playAnimation()
             val url = resources.getString(R.string.spreadsheet_url)
-            Log.i(
+            LOGGING.INFO(
                 contextTAG,
                 "userId=${userDataViewModel.userId}, roomId=${userDataViewModel.roomId}, rowID=$id"
             )

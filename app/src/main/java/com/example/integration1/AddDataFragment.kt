@@ -189,7 +189,7 @@ class AddDataFragment : Fragment() {
         val amountVal = amount.text.toString().trim { it <= ' ' }
         val descriptionVal = description.text.toString()
 
-        Log.i(contextTAG, "date = $dateVal")
+        LOGGING.INFO(contextTAG, "date = $dateVal")
         dateD.text = dateVal
         amountD.text = getString(R.string.amount_entered_AD, amountVal)
         descriptionD.text = getString(R.string.description_entered_AD, descriptionVal)
@@ -211,7 +211,6 @@ class AddDataFragment : Fragment() {
                             response,
                             Toast.LENGTH_SHORT
                         ).show()
-                        //FileWriter(ActivityUtils.reportedLogsFile).use { it.write(GlobalAccess.createLogReport(contextTAG,response,"D")) }
                         LOGGING.INFO(contextTAG, response)
                         Handler(Looper.getMainLooper()).postDelayed({
                             dialog1.dismiss()

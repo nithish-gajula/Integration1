@@ -17,7 +17,6 @@ class DefaultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        Log.i(contextTAG, " OnCreateView")
 
         return inflater.inflate(R.layout.fragment_default, container, false)
     }

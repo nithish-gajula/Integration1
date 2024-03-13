@@ -48,9 +48,9 @@ class UserDataViewModel : ViewModel() {
 
     init {
 
-        Log.i(contextTAG, "Init Started")
+        LOGGING.INFO(contextTAG, "Init Started")
         loadUserData()
-        Log.i(contextTAG, "Init Completed")
+        LOGGING.INFO(contextTAG, "Init Completed")
 
     }
 
@@ -60,7 +60,7 @@ class UserDataViewModel : ViewModel() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.i(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
+            LOGGING.INFO(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
             //_storagePermissionGranted.value = false
             updateStoragePermissionGranted(false)
             // You may also use requestPermissions from Fragment if your UI is Fragment-based
@@ -73,11 +73,11 @@ class UserDataViewModel : ViewModel() {
             //_storagePermissionGranted.value = true
             updateStoragePermissionGranted(true)
         }
-        Log.i(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
+        LOGGING.INFO(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
     }
 
     private fun loadUserData() {
-        Log.i(contextTAG, "Entered in loadUserData Function")
+        LOGGING.INFO(contextTAG, "Entered in loadUserData Function")
 
         if (!ActivityUtils.directory.exists()) {
             isDirExist = false
@@ -102,15 +102,15 @@ class UserDataViewModel : ViewModel() {
             adminStatus = userData.getString("adminStatus")
             profileId = userData.getString("profileId")
 
-            Log.i(contextTAG,"userId :  $userId")
-            Log.i(contextTAG,"userName :  $userName")
-            Log.i(contextTAG,"age :  $age")
-            Log.i(contextTAG,"email :  $email")
-            Log.i(contextTAG,"phoneNumber :  $phoneNumber")
-            Log.i(contextTAG,"loginTime :  $loginTime")
-            Log.i(contextTAG,"roomId :  $roomId")
-            Log.i(contextTAG,"adminStatus :  $adminStatus")
-            Log.i(contextTAG,"profileId :  $profileId")
+            LOGGING.INFO(contextTAG,"userId :  $userId")
+            LOGGING.INFO(contextTAG,"userName :  $userName")
+            LOGGING.INFO(contextTAG,"age :  $age")
+            LOGGING.INFO(contextTAG,"email :  $email")
+            LOGGING.INFO(contextTAG,"phoneNumber :  $phoneNumber")
+            LOGGING.INFO(contextTAG,"loginTime :  $loginTime")
+            LOGGING.INFO(contextTAG,"roomId :  $roomId")
+            LOGGING.INFO(contextTAG,"adminStatus :  $adminStatus")
+            LOGGING.INFO(contextTAG,"profileId :  $profileId")
 
             if (roomId.length <= 1) {
                 isRoomLengthLessThanOne = true

@@ -95,7 +95,7 @@ class RoomActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.i(contextTAG, "onBackPressed clicked")
+                LOGGING.INFO(contextTAG, "onBackPressed clicked")
                 if (pressedTime + 2000 > System.currentTimeMillis()) {
                     finishAffinity()
                 } else {

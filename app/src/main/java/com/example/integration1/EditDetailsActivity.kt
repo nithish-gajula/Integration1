@@ -227,6 +227,7 @@ class EditDetailsActivity : AppCompatActivity() {
             Method.POST, getString(R.string.spreadsheet_url),
             { response ->
                 Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+                LOGGING.INFO(contextTAG, response)
                 alertDialog.dismiss()
                 ActivityUtils.navigateToActivity(this, Intent(this, LoginActivity::class.java))
             },
@@ -234,6 +235,7 @@ class EditDetailsActivity : AppCompatActivity() {
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 Handler(Looper.getMainLooper()).postDelayed({
+                    LOGGING.INFO(contextTAG,error.toString())
                     alertDialog.dismiss()
                 }, 2000)
                 resultTV.visibility = View.VISIBLE

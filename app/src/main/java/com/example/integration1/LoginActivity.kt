@@ -69,24 +69,24 @@ class LoginActivity : AppCompatActivity() {
         passwordTIL.setStartIconTintList(null)
 
         loginBTN.setOnClickListener {
-            Log.i(contextTAG, "loginBTN clicked")
+            LOGGING.INFO(contextTAG, "loginBTN clicked")
             resultTV.visibility = View.INVISIBLE
             loginFunction()
         }
 
         signupTV.setOnClickListener {
-            Log.i(contextTAG, "signupTV clicked")
+            LOGGING.INFO(contextTAG, "signupTV clicked")
             ActivityUtils.navigateToActivity(this, Intent(this, SignupActivity::class.java))
         }
 
         forgotPasswordTV.setOnClickListener {
-            Log.i(contextTAG, "forgotPasswordTV clicked")
+            LOGGING.INFO(contextTAG, "forgotPasswordTV clicked")
             ActivityUtils.navigateToActivity(this, Intent(this, ForgotPasswordActivity::class.java))
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.i(contextTAG, "onBackPressed clicked")
+                LOGGING.INFO(contextTAG, "onBackPressed clicked")
                 finishAffinity()
             }
         })
@@ -121,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
         val stringRequest = StringRequest(
             Request.Method.GET, "$url$loginParameter",
             { response ->
-                Log.i(contextTAG, "Got response = $response")
+                LOGGING.INFO(contextTAG, "Got response = $response")
                 extractJsonData(response)
                 Handler(Looper.getMainLooper()).postDelayed({
                     Log.d(contextTAG, "Response Handler started ")
@@ -231,21 +231,21 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun createAndWriteToFile(userData: JSONObject) {
-        Log.i(contextTAG, "Entered in createAndWriteToFile Function")
+        LOGGING.INFO(contextTAG, "Entered in createAndWriteToFile Function")
 
         if (!ActivityUtils.directory.exists()) {
-            Log.i(contextTAG, "Directory not exists, Creating Directory")
+            LOGGING.INFO(contextTAG, "Directory not exists, Creating Directory")
             ActivityUtils.directory.mkdirs()
         }
         if (!ActivityUtils.userDataFile.exists()) {
-            Log.i(contextTAG, "File not exists, Creating File")
+            LOGGING.INFO(contextTAG, "File not exists, Creating File")
             ActivityUtils.userDataFile.createNewFile()
         }
 
         try {
             userData.put("loginTime", DateFormat.getDateTimeInstance().format(Date()).toString())
             FileWriter(ActivityUtils.userDataFile).use { it.write(userData.toString()) }
-            Log.i(contextTAG, "userData :  $userData")
+            LOGGING.INFO(contextTAG, "userData :  $userData")
 
         } catch (e: IOException) {
             e.printStackTrace()

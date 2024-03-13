@@ -85,29 +85,31 @@ class MainActivity : AppCompatActivity() {
         alertDialog.setCanceledOnTouchOutside(false)
 
         joinRoomBTN.setOnClickListener {
-            Log.i(contextTAG, "joinRoomBTN clicked")
+            LOGGING.INFO(contextTAG, "joinRoomBTN clicked")
             resultTV.visibility = View.INVISIBLE
             joinRoomDialog()
         }
 
         createRoomBTN.setOnClickListener {
-            Log.i(contextTAG, "createRoomBTN clicked")
+            LOGGING.INFO(contextTAG, "createRoomBTN clicked")
             resultTV.visibility = View.INVISIBLE
             createRoomFunction()
         }
 
         if (!ActivityUtils.reportedLogsFile.exists()) {
+            LOGGING.INFO(contextTAG, "reportedLogsFile not exist, Creating File")
             ActivityUtils.reportedLogsFile.createNewFile()
         }
         if (!ActivityUtils.reportedReadmeLogsFile.exists()) {
+            LOGGING.INFO(contextTAG, "reportedReadmeLogsFile not exist, Creating File")
             ActivityUtils.reportedReadmeLogsFile.createNewFile()
         }
 
         if (!userDataViewModel.isDirExist || !userDataViewModel.isFileExist || userDataViewModel.navigateToLoginActivity) {
-            Log.i(contextTAG, "Checking userDataViewModel - navigating To LoginActivity ")
+            LOGGING.INFO(contextTAG, "Checking userDataViewModel - navigating To LoginActivity ")
             ActivityUtils.navigateToActivity(this, Intent(this, LoginActivity::class.java))
         } else if (!userDataViewModel.isRoomLengthLessThanOne) {
-            Log.i(contextTAG, "Checking userDataViewModel - navigating To RoomActivity ")
+            LOGGING.INFO(contextTAG, "Checking userDataViewModel - navigating To RoomActivity ")
             ActivityUtils.navigateToActivity(this, Intent(this, RoomActivity::class.java))
         }
 
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                Log.i(contextTAG, "onBackPressed clicked")
+                LOGGING.INFO(contextTAG, "onBackPressed clicked")
                 finishAffinity()
             }
         })
@@ -174,7 +176,6 @@ class MainActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        Log.i(contextTAG, "Entered in onRequestPermissionsResult - Checking userDataViewModel")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 100) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -190,7 +191,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun joinRoomDialog() {
 
-        Log.i(contextTAG, "Entered in joinRoomDialog Function")
+        LOGGING.INFO(contextTAG, "Entered in joinRoomDialog Function")
 
         val builderR = AlertDialog.Builder(this)
         val inflaterR = layoutInflater
@@ -205,13 +206,13 @@ class MainActivity : AppCompatActivity() {
 
         // Set click listener for the button
         joinBTN.setOnClickListener {
-            Log.i(contextTAG, " joinBTN clicked ")
+            LOGGING.INFO(contextTAG, " joinBTN clicked ")
             val enteredText = roomId.text.toString()
             if (enteredText.isEmpty()) {
-                Log.i(contextTAG, " If condition ")
+                LOGGING.INFO(contextTAG, " If condition ")
                 roomId.error = getString(R.string.roomId_should_not_be_empty)
             } else {
-                Log.i(contextTAG, " Else Condition ")
+                LOGGING.INFO(contextTAG, " Else Condition ")
                 alertDialogR.dismiss()
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = getString(R.string.you_entered, enteredText)
@@ -221,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         cancelBTN.setOnClickListener {
-            Log.i(contextTAG, " CancelBTN clicked ")
+            LOGGING.INFO(contextTAG, " CancelBTN clicked ")
             alertDialogR.dismiss()
         }
         alertDialogR.show()
@@ -229,7 +230,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun joinRoomFunction(roomID: String) {
 
-        Log.i(contextTAG, " Entered in joinRoomFunction")
+        LOGGING.INFO(contextTAG, " Entered in joinRoomFunction")
 
         animationView.setAnimation(R.raw.profile_loading)
         animationView.playAnimation()
@@ -237,22 +238,22 @@ class MainActivity : AppCompatActivity() {
         val stringRequest = object : StringRequest(
             Method.POST, getString(R.string.spreadsheet_url),
             { response ->
-                Log.i(contextTAG, " Got response = $response")
+                LOGGING.INFO(contextTAG, " Got response = $response")
                 extractRoomJoiningJsonData(response, roomID)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.i(contextTAG, " Response Handler Started")
+                    LOGGING.INFO(contextTAG, " Response Handler Started")
                     alertDialog.dismiss()
-                    Log.i(contextTAG, " Response Handler Ended")
+                    LOGGING.INFO(contextTAG, " Response Handler Ended")
                 }, 2000)
             },
             { error ->
-                Log.i(contextTAG, " Got Error = $error")
+                LOGGING.INFO(contextTAG, " Got Error = $error")
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.i(contextTAG, " Error Handler Started")
+                    LOGGING.INFO(contextTAG, " Error Handler Started")
                     alertDialog.dismiss()
-                    Log.i(contextTAG, " Error Handler Started")
+                    LOGGING.INFO(contextTAG, " Error Handler Started")
                 }, 2000)
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = error.toString()
@@ -271,14 +272,14 @@ class MainActivity : AppCompatActivity() {
         val policy = DefaultRetryPolicy(socketTimeOut, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
         stringRequest.retryPolicy = policy
         requestQueue.add(stringRequest)
-        Log.i(contextTAG, " Existing joinRoomFunction")
+        LOGGING.INFO(contextTAG, " Existing joinRoomFunction")
     }
 
     private fun extractRoomJoiningJsonData(jsonResponse: String, roomID: String) {
-        Log.i(contextTAG, " Entered extractRoomJoiningJsonData Function")
+        LOGGING.INFO(contextTAG, " Entered extractRoomJoiningJsonData Function")
 
         try {
-            Log.i(contextTAG, " Existing try block")
+            LOGGING.INFO(contextTAG, " Existing try block")
 
             val jsonObj = JSONObject(jsonResponse)
             val jsonArray = jsonObj.getJSONArray("items")
@@ -294,23 +295,23 @@ class MainActivity : AppCompatActivity() {
 
                 when {
                     result.toBoolean() -> {
-                        Log.i(contextTAG, " Room Joining result TRUE")
+                        LOGGING.INFO(contextTAG, " Room Joining result TRUE")
                         animationView.setAnimation(R.raw.protected_shield)
                         animationView.playAnimation()
                         Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
                         storeRoomId(roomID)
                         Handler(Looper.getMainLooper()).postDelayed({
-                            Log.i(contextTAG, " Room Joining Handler started")
+                            LOGGING.INFO(contextTAG, " Room Joining Handler started")
                             ActivityUtils.navigateToActivity(
                                 this,
                                 Intent(this, RoomActivity::class.java)
                             )
-                            Log.i(contextTAG, " Room Joining Handler Ended")
+                            LOGGING.INFO(contextTAG, " Room Joining Handler Ended")
                         }, 2000)
                     }
 
                     !roomIdStatus.toBoolean() -> {
-                        Log.i(
+                        LOGGING.INFO(
                             contextTAG,
                             " roomIdStatus FALSE for ${getString(R.string.invalid_roomId)}"
                         )
@@ -323,7 +324,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        Log.i(
+                        LOGGING.INFO(
                             contextTAG,
                             " Room Joining result FALSE for ${getString(R.string.something_went_wrong)}"
                         )
@@ -335,7 +336,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } else {
-                Log.i(
+                LOGGING.INFO(
                     contextTAG,
                     " Room Joining result FALSE for ${getString(R.string.no_data_found)}"
                 )
@@ -351,7 +352,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createRoomFunction() {
-        Log.i(contextTAG, "Entered in createRoomFunction")
+        LOGGING.INFO(contextTAG, "Entered in createRoomFunction")
 
         animationView.setAnimation(R.raw.love_is_blind)
         animationView.playAnimation()
@@ -360,22 +361,22 @@ class MainActivity : AppCompatActivity() {
         val stringRequest = object : StringRequest(
             Method.POST, getString(R.string.spreadsheet_url),
             { response ->
-                Log.i(contextTAG, "Got response = $response")
+                LOGGING.INFO(contextTAG, "Got response = $response")
                 extractRoomCreationJsonData(response)
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.i(contextTAG, "Response handler started")
+                    LOGGING.INFO(contextTAG, "Response handler started")
                     alertDialog.dismiss()
-                    Log.i(contextTAG, "Response handler Ended")
+                    LOGGING.INFO(contextTAG, "Response handler Ended")
                 }, 2000)
             },
             { error ->
-                Log.i(contextTAG, "Got Error = $error")
+                LOGGING.INFO(contextTAG, "Got Error = $error")
                 animationView.setAnimation(R.raw.error)
                 animationView.playAnimation()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    Log.i(contextTAG, "Error handler started")
+                    LOGGING.INFO(contextTAG, "Error handler started")
                     alertDialog.dismiss()
-                    Log.i(contextTAG, "Error handler started")
+                    LOGGING.INFO(contextTAG, "Error handler started")
                 }, 2000)
                 resultTV.visibility = View.VISIBLE
                 resultTV.text = error.toString()
@@ -397,7 +398,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createRoomId(): String {
-        Log.i(contextTAG, "Entered in createRoomId Function")
+        LOGGING.INFO(contextTAG, "Entered in createRoomId Function")
         val calendar = Calendar.getInstance()
 
         // Extract date components
@@ -413,7 +414,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun generateRandomString(): String {
-        Log.i(contextTAG, "Entered in generateRandomString Function")
+        LOGGING.INFO(contextTAG, "Entered in generateRandomString Function")
         val alphabet = getString(R.string.alphabets)
         val random = Random(System.currentTimeMillis())
 
@@ -423,7 +424,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun extractRoomCreationJsonData(jsonResponse: String) {
-        Log.i(contextTAG, "Entered in extractRoomCreationJsonData Function")
+        LOGGING.INFO(contextTAG, "Entered in extractRoomCreationJsonData Function")
         val userIdStatus: String
         val createRoomStatus: String
         val roomID: String
@@ -445,23 +446,23 @@ class MainActivity : AppCompatActivity() {
 
                 when {
                     createRoomStatus.toBoolean() -> {
-                        Log.i(contextTAG, "createRoomStatus result is TRUE")
+                        LOGGING.INFO(contextTAG, "createRoomStatus result is TRUE")
                         animationView.setAnimation(R.raw.done)
                         animationView.playAnimation()
                         storeRoomIdAndAdminStatus(roomID, adminStatus)
                         Toast.makeText(this, "Room Created", Toast.LENGTH_SHORT).show()
                         Handler(Looper.getMainLooper()).postDelayed({
-                            Log.i(contextTAG, "Handler Started")
+                            LOGGING.INFO(contextTAG, "Handler Started")
                             ActivityUtils.navigateToActivity(
                                 this,
                                 Intent(this, RoomActivity::class.java)
                             )
-                            Log.i(contextTAG, "Handler Ended")
+                            LOGGING.INFO(contextTAG, "Handler Ended")
                         }, 2000)
                     }
 
                     !userIdStatus.toBoolean() -> {
-                        Log.i(
+                        LOGGING.INFO(
                             contextTAG,
                             "createRoomStatus result is FALSE for ${getString(R.string.user_id_not_found)}"
                         )
@@ -472,7 +473,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        Log.i(
+                        LOGGING.INFO(
                             contextTAG,
                             "createRoomStatus result is FALSE for ${getString(R.string.something_went_wrong)}"
                         )
@@ -484,7 +485,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } else {
-                Log.i(
+                LOGGING.INFO(
                     contextTAG,
                     "createRoomStatus result is FALSE for ${getString(R.string.no_data_found)}"
                 )
@@ -494,13 +495,13 @@ class MainActivity : AppCompatActivity() {
                 resultTV.text = getString(R.string.no_data_found)
             }
         } catch (e: JSONException) {
-            Log.i(contextTAG, "JSONException ${e.message}")
+            LOGGING.INFO(contextTAG, "JSONException ${e.message}")
             e.printStackTrace()
         }
     }
 
     private fun storeRoomIdAndAdminStatus(roomID: String, adminStatus: String) {
-        Log.i(contextTAG, "Entered storeRoomIdAndAdminStatus Function")
+        LOGGING.INFO(contextTAG, "Entered storeRoomIdAndAdminStatus Function")
         try {
 
             val content = ActivityUtils.userDataFile.readText()
@@ -520,7 +521,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun storeRoomId(roomID: String) {
-        Log.i(contextTAG, "Entered storeRoomId Function")
+        LOGGING.INFO(contextTAG, "Entered storeRoomId Function")
         try {
 
             val content = ActivityUtils.userDataFile.readText()

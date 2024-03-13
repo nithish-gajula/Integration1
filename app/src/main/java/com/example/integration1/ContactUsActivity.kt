@@ -61,7 +61,7 @@ class ContactUsActivity : AppCompatActivity() {
         // Set a listener to capture the selected value
         autoCompleteTextView.setOnItemClickListener { parent, _, position, _ ->
             category = parent.getItemAtPosition(position) as String
-            Log.i(contextTAG, "Selected Item = $category")
+            LOGGING.INFO(contextTAG, "Selected Item = $category")
             dropdownLayout.error = null // Clear error if there was any
         }
 
