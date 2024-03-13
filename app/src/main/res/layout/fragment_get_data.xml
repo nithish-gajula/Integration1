@@ -1,4 +1,4 @@
-<RelativeLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,42 +7,53 @@
     android:background="@color/orange_light"
     tools:context=".GetDataFragment">
 
-    <TextView
-        android:id="@+id/get_data_warning_id"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/manage_layout">
-
-        <ListView
-            android:id="@+id/lv_items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/manage_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+        <TextView
+            android:id="@+id/get_data_warning_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="20dp"
-            android:backgroundTint="#fff">
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/lv_items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/bottom_sheet_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bottom_sheet_corners"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_remove_24"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center|top"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView2"
@@ -59,7 +70,6 @@
                 android:id="@+id/total_Amount_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
                 android:text="  ₹  "
                 android:textColor="#000"
                 android:textSize="20sp"
@@ -67,8 +77,16 @@
                 app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
                 app:layout_constraintStart_toEndOf="@+id/textView2" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
 
-</RelativeLayout>
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

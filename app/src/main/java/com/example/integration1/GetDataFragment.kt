@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ListAdapter
 import android.widget.ListView
@@ -28,6 +28,8 @@ import com.android.volley.Response
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -45,6 +47,8 @@ class GetDataFragment : Fragment() {
     private var totalAmount: Double = 0.0
     private lateinit var warningTV: TextView
     private lateinit var roomActivity: RoomActivity
+    private lateinit var bottomSheetDialog : BottomSheetDialog
+    private var bottomSheetState : Boolean = true
 
     private val userExpensesFileName = "user_expenses.json"
     private val directoryName = "RoomBudget"
@@ -70,6 +74,18 @@ class GetDataFragment : Fragment() {
         totalAmountTV = v.findViewById(R.id.total_Amount_id)
         warningTV = v.findViewById(R.id.get_data_warning_id)
         roomActivity = activity as RoomActivity
+        val btmsheet = v.findViewById<FrameLayout>(R.id.bottom_sheet_id)
+
+        //val standardBottomSheet = v.findViewById<FrameLayout>(R.id.standard_bottom_sheet)
+        //val standardBottomSheetBehavior = BottomSheetBehavior.from(standardBottomSheet)
+        //standardBottomSheetBehavior.state = STATE_EXPANDED;
+
+
+
+        BottomSheetBehavior.from(btmsheet).apply {
+            peekHeight = 0
+            this.state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         if (GlobalAccess.isUserAddedNewData) {
             getItems()
@@ -90,12 +106,23 @@ class GetDataFragment : Fragment() {
                 val fullDescription = selectedItem.fullDescription
 
                 delete(id, userName, date, amount, fullDescription)
+            } else {
+
+                bottomSheetState = BottomSheetBehavior.STATE_EXPANDED == BottomSheetBehavior.from(btmsheet).state
+
+                if(!bottomSheetState){
+                    BottomSheetBehavior.from(btmsheet).state = BottomSheetBehavior.STATE_EXPANDED
+                    bottomSheetState = true
+                }else{
+                    BottomSheetBehavior.from(btmsheet).state = BottomSheetBehavior.STATE_COLLAPSED
+                    bottomSheetState = false
+                }
+
             }
         }
 
         return v
     }
-
     private fun getItems() {
 
         LOGGING.INFO(contextTAG, "Entered in getItems Function")
