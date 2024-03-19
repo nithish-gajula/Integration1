@@ -40,13 +40,13 @@ android {
 
 dependencies {
 
-    implementation("com.android.volley:volley:1.2.0")
+    implementation("com.android.volley:volley:1.2.1")
     implementation("com.airbnb.android:lottie:3.4.0")
-    implementation("androidx.fragment:fragment-ktx:1.3.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation ("com.github.tapadoo:alerter:7.2.4")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("com.github.jitpack:example:1.1")
     testImplementation("junit:junit:4.13.2")
@@ -56,5 +56,6 @@ dependencies {
     implementation("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.makeramen:roundedimageview:2.3.0")
+    implementation("com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT")
 }
 

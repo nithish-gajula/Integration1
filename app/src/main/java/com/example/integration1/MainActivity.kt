@@ -1,13 +1,15 @@
 package com.example.integration1
 
 import ActivityUtils
+import LOGGING
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -16,9 +18,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.DefaultRetryPolicy
@@ -28,6 +32,7 @@ import com.android.volley.toolbox.Volley
 import com.google.android.material.textfield.TextInputLayout
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 import java.util.Calendar
@@ -48,6 +53,27 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var toolbar: Toolbar
 
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            if (!permissions.all { it.value }) {
+                // Handle permission denial here
+                Toast.makeText(this, "Storage Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private val userDataFileName = "userdata.json"
+    private val reportedLogsFileName = "logs.txt"
+    private val reportedReadmeLogsFileName = "logs.md"
+    private val directoryName = "RoomBudget"
+    private val directory = File(
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+        directoryName
+    )
+    val userDataFile = File(directory, userDataFileName)
+    val reportedLogsFile = File(directory, reportedLogsFileName)
+    val reportedReadmeLogsFile = File(directory, reportedReadmeLogsFileName)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -56,7 +82,19 @@ class MainActivity : AppCompatActivity() {
         createRoomBTN = findViewById(R.id.create_room_btn_id)
         resultTV = findViewById(R.id.result_tv_id)
         requestQueue = Volley.newRequestQueue(applicationContext)
-        userDataViewModel = ViewModelProvider(this)[UserDataViewModel::class.java]
+
+
+        // Check and request storage permissions if needed
+        val permissionsToRequest = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (!checkPermissions(permissionsToRequest)) {
+            requestPermissions(permissionsToRequest)
+        }
+
+        checkOrCreateFiles()
+
 
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -84,6 +122,8 @@ class MainActivity : AppCompatActivity() {
         alertDialog = dialogBuilder.create()
         alertDialog.setCanceledOnTouchOutside(false)
 
+
+
         joinRoomBTN.setOnClickListener {
             LOGGING.INFO(contextTAG, "joinRoomBTN clicked")
             resultTV.visibility = View.INVISIBLE
@@ -96,14 +136,9 @@ class MainActivity : AppCompatActivity() {
             createRoomFunction()
         }
 
-        if (!ActivityUtils.reportedLogsFile.exists()) {
-            LOGGING.INFO(contextTAG, "reportedLogsFile not exist, Creating File")
-            ActivityUtils.reportedLogsFile.createNewFile()
-        }
-        if (!ActivityUtils.reportedReadmeLogsFile.exists()) {
-            LOGGING.INFO(contextTAG, "reportedReadmeLogsFile not exist, Creating File")
-            ActivityUtils.reportedReadmeLogsFile.createNewFile()
-        }
+
+
+        userDataViewModel = ViewModelProvider(this)[UserDataViewModel::class.java]
 
         if (!userDataViewModel.isDirExist || !userDataViewModel.isFileExist || userDataViewModel.navigateToLoginActivity) {
             LOGGING.INFO(contextTAG, "Checking userDataViewModel - navigating To LoginActivity ")
@@ -113,9 +148,6 @@ class MainActivity : AppCompatActivity() {
             ActivityUtils.navigateToActivity(this, Intent(this, RoomActivity::class.java))
         }
 
-        // Call the method to check for permissions
-        userDataViewModel.getStoragePermissions(this)
-
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 LOGGING.INFO(contextTAG, "onBackPressed clicked")
@@ -123,6 +155,34 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun checkOrCreateFiles() {
+
+        if (!directory.exists()) {
+            directory.mkdirs()
+        }
+        if (!userDataFile.exists()) {
+            userDataFile.createNewFile()
+        }
+        if (!reportedLogsFile.exists()) {
+            reportedLogsFile.createNewFile()
+        }
+        if (!reportedReadmeLogsFile.exists()) {
+            reportedReadmeLogsFile.createNewFile()
+        }
+
+    }
+
+    private fun checkPermissions(permissions: Array<String>): Boolean {
+        return permissions.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    private fun requestPermissions(permissions: Array<String>) {
+        requestPermissionLauncher.launch(permissions)
+    }
+
 
     private fun openCustomMenu() {
         // Handle custom overflow menu action
@@ -170,24 +230,6 @@ class MainActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    // Handle permission request result
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 100) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                userDataViewModel.getStoragePermissions(this)
-                Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Storage Permission Needed", Toast.LENGTH_SHORT).show()
-                finish()
-            }
-        }
-
-    }
 
     private fun joinRoomDialog() {
 

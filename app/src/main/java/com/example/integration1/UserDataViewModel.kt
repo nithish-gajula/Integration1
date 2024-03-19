@@ -33,44 +33,8 @@ class UserDataViewModel : ViewModel() {
 
     private val contextTAG: String = "UserDataViewModel"
 
-
-//    private val _storagePermissionGranted = MutableLiveData<Boolean>()
-//    val storagePermissionGranted: LiveData<Boolean>
-//        get() = _storagePermissionGranted
-
-    // Define storagePermissionGranted as a MutableLiveData
-    private val storagePermissionGranted = MutableLiveData<Boolean>()
-
-    // Function to update the value
-    private fun updateStoragePermissionGranted(newValue: Boolean) {
-        storagePermissionGranted.value = newValue
-    }
-
-
     init {
         loadUserData()
-    }
-
-    fun getStoragePermissions(activity: Activity) {
-        if (ActivityCompat.checkSelfPermission(
-                activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            LOGGING.INFO(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
-            //_storagePermissionGranted.value = false
-            updateStoragePermissionGranted(false)
-            // You may also use requestPermissions from Fragment if your UI is Fragment-based
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                100
-            )
-        } else {
-            //_storagePermissionGranted.value = true
-            updateStoragePermissionGranted(true)
-        }
-        LOGGING.INFO(contextTAG, "storagePermissionGranted = $storagePermissionGranted")
     }
 
     private fun loadUserData() {
