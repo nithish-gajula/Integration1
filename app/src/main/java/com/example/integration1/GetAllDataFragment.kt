@@ -246,7 +246,6 @@ class GetAllDataFragment : Fragment() {
         return DateFormats(formattedDate1, formattedDate2)
     }
 
-
     private fun popUpDetails(
         id: String,
         userName: String,
